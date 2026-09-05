@@ -19,7 +19,7 @@ const Contact = () => {
     e.preventDefault();
     setSubmitted(true);
     alert(
-      'RFP Inquiry received. Julian Vance and the executive strategy desk will review your submission within 4 business hours.'
+      'Inquiry received. Promo Hub will review your submission and get back to you shortly.'
     );
     setFormData({
       name: '',
@@ -31,10 +31,10 @@ const Contact = () => {
   };
 
   const socialLinks = [
-    { label: 'X', href: '#' },
-    { label: 'in', href: '#' },
-    { label: 'IG', href: '#' },
-    { label: 'YT', href: '#' },
+    { label: 'WA', href: 'https://wa.me/919977978575' },
+    { label: 'IG', href: 'https://instagram.com/promo.hub' },
+    { label: 'Mail', href: 'mailto:promo.hub9977@gmail.com' },
+    { label: 'Call', href: 'tel:+919977978575' },
   ];
 
   return (
@@ -57,7 +57,7 @@ const Contact = () => {
                 <div className="mt-4">
                   <a
                     className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-xs font-bold shadow-lg"
-                    href="mailto:julian@nexadigital.agency"
+                    href="mailto:promo.hub9977@gmail.com"
                   >
                     <span>Let's Talk Now</span>
                     <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
@@ -67,17 +67,23 @@ const Contact = () => {
 
               {/* Contact Directory List */}
               <div className="space-y-3 pt-6 border-t border-purple-500/15">
-                <div className="flex items-center gap-3 text-xs text-gray-300">
+                <a
+                  href="tel:+919977978575"
+                  className="flex items-center gap-3 text-xs text-gray-300 hover:text-white transition-colors"
+                >
                   <span className="material-symbols-outlined text-purple-400 text-[18px]">phone</span>
-                  <span>+1 (415) 890-3420</span>
-                </div>
-                <div className="flex items-center gap-3 text-xs text-gray-300">
+                  <span>+91 99779 78575</span>
+                </a>
+                <a
+                  href="mailto:promo.hub9977@gmail.com"
+                  className="flex items-center gap-3 text-xs text-gray-300 hover:text-white transition-colors"
+                >
                   <span className="material-symbols-outlined text-purple-400 text-[18px]">mail</span>
-                  <span>julian@nexadigital.agency / grow@nexadigital.agency</span>
-                </div>
+                  <span>promo.hub9977@gmail.com</span>
+                </a>
                 <div className="flex items-center gap-3 text-xs text-gray-300">
                   <span className="material-symbols-outlined text-purple-400 text-[18px]">location_on</span>
-                  <span>San Francisco, CA / New York, NY</span>
+                  <span>Mahalaxmi Nagar, Indore, Madhya Pradesh</span>
                 </div>
               </div>
 
@@ -88,6 +94,8 @@ const Contact = () => {
                     key={idx}
                     className="w-8 h-8 rounded-full bg-[#08060c] border border-purple-500/20 text-gray-300 hover:text-white hover:border-purple-400 flex items-center justify-center text-xs transition-colors"
                     href={item.href}
+                    target="_blank"
+                    rel="noreferrer"
                     aria-label={`Follow on ${item.label}`}
                   >
                     {item.label}

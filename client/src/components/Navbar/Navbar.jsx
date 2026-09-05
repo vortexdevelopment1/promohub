@@ -5,7 +5,7 @@ const Navbar = () => {
 
   const navLinks = [
     { label: 'Home', href: '#home', active: true },
-    { label: 'About Us', href: '#founder' },
+    { label: 'About Us', href: '#about' },
     { label: 'Services', href: '#services' },
     { label: 'Portfolio', href: '#portfolio' },
     { label: 'Process', href: '#metrics' },
@@ -20,13 +20,13 @@ const Navbar = () => {
         <a className="flex items-center gap-3 group" href="#home">
           <div className="w-10 h-10 rounded-xl overflow-hidden bg-purple-950/40 p-1 flex items-center justify-center border border-purple-500/30 shadow-[0_0_15px_rgba(168,85,247,0.3)] group-hover:border-purple-400 transition-all">
             <img
-              alt="Nexa Digital Logo"
+              alt="Promo Hub Logo"
               className="w-full h-full object-contain"
               src="https://lh3.googleusercontent.com/aida/AEtjO1W2miHYw4WQQHw4yaKj1OyxAodPGe-CJhKIU7atKX2phLDUmoHYJI4hxeOOgd8E5u0ecuPDHN7eHMHXuQCxACoJEj250DFX6AO3FLWk6McIN-nceDH1KGV8_9HHoKPk0PVm6y81q7c4--FJWuqc4Hkuh5KFyteggOG03iekWbYy-gdHW_-1c7WXaPufV_idmVVHT8kuJ-CKt8P1MkwuBOHZdudGNcGw6qPTr9-p9r_pUMl_tmHj_71iOnMq"
             />
           </div>
           <span className="font-extrabold tracking-wider text-white text-lg">
-            NEXA <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-fuchsia-400">DIGITAL</span>
+            PROMO <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-fuchsia-400">HUB</span>
           </span>
         </a>
 

@@ -62,18 +62,18 @@ const Hero = () => {
             {/* Eyebrow Pill */}
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-950/40 border border-purple-500/30">
               <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-purple-300">
-                Independent Creative Growth Studio
+                Creative Digital Marketing Agency • Indore
               </span>
             </div>
 
             {/* Distinctive Punchy Headline */}
             <h1 className="text-4xl sm:text-5xl lg:text-[56px] font-extrabold text-white tracking-tight leading-[1.12]">
-              WE ENGINEER <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-fuchsia-400 to-indigo-300">CULTURAL MOMENTUMS</span> &amp; HIGH-CONVERTING BRAND EXPERIENCES.
+              WE BUILD <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-fuchsia-400 to-indigo-300">DIGITAL EXPERIENCES</span> THAT HELP BRANDS GROW.
             </h1>
 
             {/* Narrative Subtitle */}
             <p className="text-sm sm:text-base text-gray-300/90 max-w-xl font-normal leading-relaxed">
-              We fuse cinematic viral storytelling with algorithmic paid media engineering, immersive web design, and full-funnel predictive growth architecture to scale market leaders into dominant category icons.
+              Promo Hub is a creative digital marketing agency based in Indore, helping businesses grow with strategy, creativity, and powerful content.
             </p>
 
             {/* Action Buttons */}
@@ -109,10 +109,10 @@ const Hero = () => {
               </div>
               <div className="flex flex-col">
                 <div className="flex items-center gap-1.5">
-                  <span className="text-xs font-bold text-white">15+ Video Call Consultations Done</span>
+                  <span className="text-xs font-bold text-white">Founded by Varun Soni</span>
                   <span className="material-symbols-outlined text-purple-400 text-[16px] material-symbols-fill">verified</span>
                 </div>
-                <span className="text-[11px] text-gray-400">Over $250M+ Verified Client Revenue • Top Performance Partner Meta &amp; Google</span>
+                <span className="text-[11px] text-gray-400">Founder, Promo Hub | 2+ Years of Experience in Digital Marketing</span>
               </div>
             </div>
           </div>
@@ -125,7 +125,7 @@ const Hero = () => {
               {/* 3D Centerpiece Visual */}
               <div className="relative z-10 w-[340px] h-[340px] rounded-full overflow-hidden flex items-center justify-center">
                 <img
-                  alt="Nexa Digital 3D Holographic Core"
+                  alt="Promo Hub 3D Holographic Core"
                   className="w-full h-full object-contain filter drop-shadow-[0_0_35px_rgba(168,85,247,0.7)]"
                   src="https://lh3.googleusercontent.com/aida/AEtjO1X0aBzhSnwt7gjVJCYZvEfxs7x_aigoky1YHAjK8VtVOtVb5c5FvUYHoX5PULHBAMk1HCjZOYXAuPl2-sDINIRWWo3zIwBYsc8p6vmBUtVrCRImvRIN86h3xi69VR47lOwZ4FU_q-88C1imyyUovQTkNZFKWOCHbSXiQaWeqQSjNL-GYzM8QpRPB56wv3KG717S_edTKZci3CIgeEKykB3_0i1mle82NIfQiJAFVTmbWhHslqME6ngZ15bA"
                 />

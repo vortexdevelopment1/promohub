@@ -1,38 +1,38 @@
 export const services = [
   {
     id: 1,
-    icon: "ads_click",
-    title: "Global Performance Marketing & Paid Media",
-    description: "Precision multi-channel paid acquisition across Meta, Google, TikTok, LinkedIn, and programmatic networks powered by proprietary dynamic bid scripts."
+    icon: "share",
+    title: "Social Media Management",
+    description: "Strategic content and engagement that grows your brand's presence."
   },
   {
     id: 2,
-    icon: "travel_explore",
-    title: "Algorithmic SEO & Generative AI Search Discovery",
-    description: "Dominating search-engine results pages and modern generative AI discovery engines (Perplexity, ChatGPT Search) through programmatic semantic entities."
+    icon: "videocam",
+    title: "Video Editing",
+    description: "High-quality reels and videos that capture attention and tell your story."
   },
   {
     id: 3,
-    icon: "devices",
-    title: "High-Conversion UX/UI & Immersive Web Development",
-    description: "Hyper-polished, ultra-fast web experiences and interactive landing pages engineered to transform high-intent cold traffic into committed evangelists."
+    icon: "edit_note",
+    title: "Content Creation",
+    description: "Creative content that connects, engages, and converts your audience."
   },
   {
     id: 4,
-    icon: "videocam",
-    title: "Viral Short-Form Video & Creative Content Studio",
-    description: "In-house creative laboratory shooting cinematic UGC, TikTok native narratives, and founder-led thought leadership reels that shatter organic algorithms."
+    icon: "ads_click",
+    title: "Digital Marketing",
+    description: "Data-driven strategies that drive traffic and increase conversions."
   },
   {
     id: 5,
-    icon: "bar_chart",
-    title: "Full-Funnel Lifecycle Marketing & Predictive CRM",
-    description: "Autonomous lifecycle triggers, predictive churn modeling, and LLM-augmented sales nurture sequences that maximize revenue per user."
+    icon: "palette",
+    title: "Brand Strategy",
+    description: "Building strong brands with clear strategy, identity, and positioning."
   },
   {
     id: 6,
-    icon: "palette",
-    title: "Omnichannel Brand Identity & Strategic Positioning",
-    description: "Positioning your enterprise brand as the unmistakable category leader with magnetic narrative positioning, visual systems, and launch playbooks."
+    icon: "devices",
+    title: "Website & Digital Solutions",
+    description: "Modern websites and digital tools that support business growth."
   }
 ];

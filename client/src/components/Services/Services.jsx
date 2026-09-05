@@ -13,7 +13,7 @@ const Services = () => {
               <span>OUR SERVICES</span>
             </div>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
-              Solutions That Drive <br className="hidden sm:inline" /><span className="text-purple-400">Real</span> Business Growth
+              What We <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-fuchsia-400">Do</span>
             </h2>
           </div>
           <div className="flex flex-col md:items-end gap-4 max-w-md">

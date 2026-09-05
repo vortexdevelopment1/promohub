@@ -1,6 +1,7 @@
 import React from 'react';
 import Navbar from '../components/Navbar/Navbar';
 import Hero from '../components/Hero/Hero';
+import About from '../components/About/About';
 import Founder from '../components/Founder/Founder';
 import Stats from '../components/Stats/Stats';
 import Portfolio from '../components/Portfolio/Portfolio';
@@ -31,6 +32,7 @@ const Home = () => {
       {/* Main Content */}
       <main className="relative z-10 w-full pt-20" id="home">
         <Hero />
+        <About />
         <Founder />
         <Stats />
         <Portfolio />

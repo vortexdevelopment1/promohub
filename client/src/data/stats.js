@@ -1,32 +1,26 @@
 export const stats = [
   {
     id: 1,
-    value: "450+",
-    label: "Global Campaigns",
+    value: "15+",
+    label: "Projects Completed",
     isWideOnMobile: false
   },
   {
     id: 2,
-    value: "98.4%",
-    label: "Client Retention",
+    value: "10+",
+    label: "Happy Clients",
     isWideOnMobile: false
   },
   {
     id: 3,
-    value: "12+",
-    label: "Years Authority",
+    value: "2+",
+    label: "Years of Experience",
     isWideOnMobile: false
   },
   {
     id: 4,
-    value: "28+",
-    label: "Industries Scaled",
+    value: "5+",
+    label: "Industries Served",
     isWideOnMobile: false
-  },
-  {
-    id: 5,
-    value: "$280M+",
-    label: "Verified Revenue",
-    isWideOnMobile: true
   }
 ];

@@ -285,11 +285,14 @@ const Portfolio = () => {
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-purple-400">
               <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse"></span>
-              <span>OUR WORK / REELS</span>
+              <span>PORTFOLIO / REELS</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-              Recent Projects &amp; <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-fuchsia-400">Reels</span>
+              A Glimpse of Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-fuchsia-400">Recent Work</span>
             </h2>
+            <p className="text-xs sm:text-sm text-gray-400 mt-1">
+              A selection of our recent video and content projects (Instagram Reels / Verticals):
+            </p>
           </div>
 
           {/* Header Controls: Prev/Next Buttons & CTA */}

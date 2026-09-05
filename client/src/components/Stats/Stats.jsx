@@ -5,7 +5,7 @@ const Stats = () => {
   return (
     <div id="metrics" className="max-w-[1480px] mx-auto px-5 sm:px-8 md:px-10 lg:px-12 py-6 sm:py-8 md:py-10 w-full">
       <div className="py-7 sm:py-8 px-6 rounded-2xl bg-[#110e1c]/50 border border-purple-500/15">
-        <div className="grid grid-cols-2 md:grid-cols-5 divide-y md:divide-y-0 md:divide-x divide-purple-500/20 text-center">
+        <div className="grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-purple-500/20 text-center">
           {stats.map((item) => (
             <div
               key={item.id}
