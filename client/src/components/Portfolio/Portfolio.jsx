@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useParams, useLocation, Link } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, EffectCoverflow, Navigation, Pagination } from 'swiper/modules';
-import { projects as defaultProjects } from '../../data/projects';
 import API from '../../services/api';
 
 // Import Swiper styles
@@ -13,11 +12,15 @@ import 'swiper/css/navigation';
 
 // Minimal 9:16 Fullscreen Reel Modal
 const ReelModal = ({ projectsList, initialIndex, onClose, onNavigate }) => {
-  const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  if (!projectsList || projectsList.length === 0) return null;
+
+  const [currentIndex, setCurrentIndex] = useState(initialIndex || 0);
   const [isMuted, setIsMuted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
   const videoRef = useRef(null);
   const currentProject = projectsList[currentIndex] || projectsList[0];
+
+  if (!currentProject) return null;
 
   useEffect(() => {
     setCurrentIndex(initialIndex);
@@ -141,7 +144,7 @@ const ReelModal = ({ projectsList, initialIndex, onClose, onNavigate }) => {
         <video
           ref={videoRef}
           key={currentProject.id}
-          src={currentProject.video || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'}
+          src={currentProject.video}
           poster={currentProject.image}
           autoPlay
           playsInline
@@ -185,42 +188,44 @@ const Portfolio = () => {
   const location = useLocation();
   const swiperRef = useRef(null);
 
-  // Projects list state initialized with default projects
-  const [projectsList, setProjectsList] = useState(defaultProjects);
+  // Projects list state initialized as empty array (no dummy data)
+  const [projectsList, setProjectsList] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Fetch videos dynamically from backend API
+  // Fetch videos dynamically from backend API (MongoDB via GET /api/videos)
   useEffect(() => {
     const fetchPortfolioVideos = async () => {
       try {
+        setLoading(true);
         const response = await API.get('/videos');
-        console.log("Portfolio API videos:", response.data.data);
+        console.log("Portfolio API response:", response.data);
+        console.log("Portfolio videos:", response.data?.data);
 
-        const videos = response.data && Array.isArray(response.data.data)
-          ? response.data.data
-          : Array.isArray(response.data)
-          ? response.data
-          : [];
+        const videos =
+          response.data && Array.isArray(response.data.data)
+            ? response.data.data
+            : Array.isArray(response.data)
+            ? response.data
+            : [];
 
-        if (videos.length > 0) {
-          const apiProjects = videos.map((video, idx) => ({
-            id: video._id || idx + 1,
-            title: video.title,
-            category: 'Video Reel',
-            deliverables: video.description || 'Deliverables: Short-Form Viral Lab & Motion Content',
-            description: video.description || video.title,
-            image: video.thumbnail,
-            video: video.videoUrl,
-            alt: video.title,
-            order: video.order !== undefined ? video.order : idx + 1,
-          }));
-          setProjectsList(apiProjects);
-        } else {
-          setProjectsList(defaultProjects);
-        }
+        const apiProjects = videos.map((video, idx) => ({
+          id: video._id || idx + 1,
+          title: video.title,
+          category: 'Video Reel',
+          deliverables: video.description || 'Deliverables: Short-Form Viral Lab & Motion Content',
+          description: video.description || video.title,
+          image: video.thumbnail,
+          video: video.videoUrl,
+          alt: video.title,
+          order: video.order !== undefined ? video.order : idx + 1,
+        }));
+
+        setProjectsList(apiProjects);
       } catch (err) {
-        // Silently fallback to default demo projects if server is offline or empty
-        console.log('Portfolio using default demo projects');
-        setProjectsList(defaultProjects);
+        console.error('Portfolio video fetch failed:', err);
+        setProjectsList([]);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -230,16 +235,18 @@ const Portfolio = () => {
   // Check if current route is a portfolio or reel detail route
   const isVideoRoute = location.pathname.startsWith('/portfolio/') || location.pathname.startsWith('/reel/');
   const activeProjectId = id ? id : null;
-  const projectIndexFromRoute = activeProjectId
-    ? projectsList.findIndex((p) => String(p.id) === String(activeProjectId))
-    : -1;
+  const projectIndexFromRoute =
+    activeProjectId && projectsList.length > 0
+      ? projectsList.findIndex((p) => String(p.id) === String(activeProjectId))
+      : -1;
 
   // Active modal index from route
-  const activeModalIndex = isVideoRoute
-    ? projectIndexFromRoute !== -1
-      ? projectIndexFromRoute
-      : 0
-    : null;
+  const activeModalIndex =
+    isVideoRoute && projectsList.length > 0
+      ? projectIndexFromRoute !== -1
+        ? projectIndexFromRoute
+        : 0
+      : null;
 
   // Scroll preservation: remember scroll position when clicking video card
   const handleCardClick = (project) => {
@@ -328,84 +335,92 @@ const Portfolio = () => {
 
         {/* Swiper.js Infinite Autoplay Carousel */}
         <div className="relative w-full py-2">
-          <Swiper
-            onBeforeInit={(swiper) => {
-              swiperRef.current = swiper;
-            }}
-            modules={[Autoplay, EffectCoverflow, Navigation, Pagination]}
-            effect={'coverflow'}
-            grabCursor={true}
-            centeredSlides={true}
-            loop={true}
-            speed={800}
-            autoplay={{
-              delay: 2500,
-              disableOnInteraction: false,
-              pauseOnMouseEnter: true,
-            }}
-            coverflowEffect={{
-              rotate: 0,
-              stretch: 0,
-              depth: 90,
-              modifier: 2,
-              slideShadows: false,
-            }}
-            breakpoints={{
-              320: {
-                slidesPerView: 1.15,
-                spaceBetween: 16,
-              },
-              640: {
-                slidesPerView: 2,
-                spaceBetween: 20,
-              },
-              1024: {
-                slidesPerView: 3,
-                spaceBetween: 28,
-              },
-            }}
-            pagination={{
-              clickable: true,
-              dynamicBullets: true,
-            }}
-            className="portfolio-swiper !pb-12"
-          >
-            {projectsList.map((project) => (
-              <SwiperSlide key={project.id} className="!h-auto flex items-center justify-center">
-                <div
-                  onClick={() => handleCardClick(project)}
-                  className="group relative w-full aspect-[4/3] rounded-2xl sm:rounded-3xl overflow-hidden border border-purple-500/30 bg-[#110e1c] shadow-[0_12px_35px_rgba(0,0,0,0.8),0_0_20px_rgba(168,85,247,0.2)] hover:border-purple-400/60 hover:shadow-[0_15px_45px_rgba(0,0,0,0.9),0_0_30px_rgba(168,85,247,0.35)] transition-all duration-300 cursor-pointer select-none"
-                >
-                  {/* Clean Poster Thumbnail Image */}
-                  <img
-                    alt={project.alt || project.title}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    src={project.image}
-                    loading="lazy"
-                  />
+          {projectsList.length > 0 ? (
+            <Swiper
+              key={`portfolio-swiper-${projectsList.length}`}
+              onBeforeInit={(swiper) => {
+                swiperRef.current = swiper;
+              }}
+              modules={[Autoplay, EffectCoverflow, Navigation, Pagination]}
+              effect={'coverflow'}
+              grabCursor={true}
+              centeredSlides={true}
+              loop={projectsList.length > 2}
+              speed={800}
+              autoplay={{
+                delay: 2500,
+                disableOnInteraction: false,
+                pauseOnMouseEnter: true,
+              }}
+              coverflowEffect={{
+                rotate: 0,
+                stretch: 0,
+                depth: 90,
+                modifier: 2,
+                slideShadows: false,
+              }}
+              breakpoints={{
+                320: {
+                  slidesPerView: 1.15,
+                  spaceBetween: 16,
+                },
+                640: {
+                  slidesPerView: 2,
+                  spaceBetween: 20,
+                },
+                1024: {
+                  slidesPerView: 3,
+                  spaceBetween: 28,
+                },
+              }}
+              pagination={{
+                clickable: true,
+                dynamicBullets: true,
+              }}
+              className="portfolio-swiper !pb-12"
+            >
+              {projectsList.map((project) => (
+                <SwiperSlide key={project.id} className="!h-auto flex items-center justify-center">
+                  <div
+                    onClick={() => handleCardClick(project)}
+                    className="group relative w-full aspect-[4/3] rounded-2xl sm:rounded-3xl overflow-hidden border border-purple-500/30 bg-[#110e1c] shadow-[0_12px_35px_rgba(0,0,0,0.8),0_0_20px_rgba(168,85,247,0.2)] hover:border-purple-400/60 hover:shadow-[0_15px_45px_rgba(0,0,0,0.9),0_0_30px_rgba(168,85,247,0.35)] transition-all duration-300 cursor-pointer select-none"
+                  >
+                    {/* Clean Poster Thumbnail Image */}
+                    <img
+                      alt={project.alt || project.title}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      src={project.image}
+                      loading="lazy"
+                    />
 
-                  {/* Gradient Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 pointer-events-none" />
+                    {/* Gradient Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 pointer-events-none" />
 
-                  {/* Center Play Button Overlay */}
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div className="w-11 h-11 rounded-full bg-purple-600/90 border border-purple-400/50 text-white flex items-center justify-center shadow-[0_0_20px_rgba(168,85,247,0.8)] group-hover:scale-110 transition-all duration-300">
-                      <span className="material-symbols-outlined text-[22px] ml-0.5 material-symbols-fill">
-                        play_arrow
-                      </span>
+                    {/* Center Play Button Overlay */}
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <div className="w-11 h-11 rounded-full bg-purple-600/90 border border-purple-400/50 text-white flex items-center justify-center shadow-[0_0_20px_rgba(168,85,247,0.8)] group-hover:scale-110 transition-all duration-300">
+                        <span className="material-symbols-outlined text-[22px] ml-0.5 material-symbols-fill">
+                          play_arrow
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Minimal Title at Bottom */}
+                    <div className="absolute bottom-3 inset-x-3 pointer-events-none">
+                      <h4 className="text-xs sm:text-sm font-bold text-white truncate drop-shadow-md group-hover:text-purple-300 transition-colors">
+                        {project.title}
+                      </h4>
                     </div>
                   </div>
-
-                  {/* Minimal Title at Bottom */}
-                  <div className="absolute bottom-3 inset-x-3 pointer-events-none">
-                    <h4 className="text-xs sm:text-sm font-bold text-white truncate drop-shadow-md group-hover:text-purple-300 transition-colors">
-                      {project.title}
-                    </h4>
-                  </div>
-                </div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          ) : !loading ? (
+            <div className="flex flex-col items-center justify-center py-16 text-center border border-purple-500/20 rounded-2xl bg-[#110e1c]/50 my-4">
+              <span className="material-symbols-outlined text-4xl text-purple-400 mb-2">video_library</span>
+              <p className="text-sm font-medium text-gray-400">No portfolio videos available yet.</p>
+            </div>
+          ) : null}
         </div>
       </div>
 

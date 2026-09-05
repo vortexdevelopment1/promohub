@@ -32,8 +32,8 @@ const Home = () => {
       {/* Main Content */}
       <main className="relative z-10 w-full pt-20" id="home">
         <Hero />
-        <About />
         <Founder />
+        <About />
         <Stats />
         <Portfolio />
         <Services />

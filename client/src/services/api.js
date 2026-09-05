@@ -8,8 +8,13 @@ import axios from 'axios';
  * Automatically injects the JWT token into the `Authorization` header
  * for all authenticated admin requests.
  */
+const rawBaseURL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const baseURL = rawBaseURL.endsWith('/api')
+  ? rawBaseURL
+  : `${rawBaseURL.replace(/\/+$/, '')}/api`;
+
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
+  baseURL,
 });
 
 // Request Interceptor: Automatically attach Bearer token from localStorage if present
