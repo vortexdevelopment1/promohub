@@ -3,7 +3,7 @@ import React from 'react';
 const Footer = () => {
   return (
     <footer className="relative z-10 w-full bg-[#06050a] border-t border-purple-500/15 py-6">
-      <div className="max-w-[1340px] mx-auto px-5 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-gray-500">
+      <div className="max-w-[1480px] mx-auto px-5 sm:px-8 md:px-10 lg:px-12 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-gray-500 w-full">
         <div className="flex items-center gap-2">
           <img
             alt="Nexa Digital Logo"

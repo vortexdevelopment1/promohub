@@ -3,7 +3,7 @@ import { useNavigate, useParams, useLocation, Link } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, EffectCoverflow, Navigation, Pagination } from 'swiper/modules';
 import { projects as defaultProjects } from '../../data/projects';
-import videoService from '../../services/videoService';
+import API from '../../services/api';
 
 // Import Swiper styles
 import 'swiper/css';
@@ -192,9 +192,17 @@ const Portfolio = () => {
   useEffect(() => {
     const fetchPortfolioVideos = async () => {
       try {
-        const response = await videoService.getVideos();
-        if (response.success && Array.isArray(response.data) && response.data.length > 0) {
-          const apiProjects = response.data.map((video, idx) => ({
+        const response = await API.get('/videos');
+        console.log("Portfolio API videos:", response.data.data);
+
+        const videos = response.data && Array.isArray(response.data.data)
+          ? response.data.data
+          : Array.isArray(response.data)
+          ? response.data
+          : [];
+
+        if (videos.length > 0) {
+          const apiProjects = videos.map((video, idx) => ({
             id: video._id || idx + 1,
             title: video.title,
             category: 'Video Reel',
@@ -203,13 +211,16 @@ const Portfolio = () => {
             image: video.thumbnail,
             video: video.videoUrl,
             alt: video.title,
-            order: video.order,
+            order: video.order !== undefined ? video.order : idx + 1,
           }));
           setProjectsList(apiProjects);
+        } else {
+          setProjectsList(defaultProjects);
         }
       } catch (err) {
         // Silently fallback to default demo projects if server is offline or empty
         console.log('Portfolio using default demo projects');
+        setProjectsList(defaultProjects);
       }
     };
 
@@ -268,7 +279,7 @@ const Portfolio = () => {
       className="py-8 sm:py-10 md:py-12 relative overflow-hidden"
       id="portfolio"
     >
-      <div className="max-w-[1340px] mx-auto px-5 sm:px-8">
+      <div className="max-w-[1480px] mx-auto px-5 sm:px-8 md:px-10 lg:px-12 w-full">
         {/* Section Header */}
         <div className="flex items-center justify-between gap-4 mb-6 sm:mb-8">
           <div className="flex flex-col gap-1">

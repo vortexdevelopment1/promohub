@@ -15,7 +15,7 @@ const Navbar = () => {
 
   return (
     <header className="fixed top-0 inset-x-0 z-50 bg-[#08060c]/85 backdrop-blur-xl border-b border-purple-500/15">
-      <div className="max-w-[1340px] mx-auto px-5 sm:px-8 h-20 flex items-center justify-between gap-4">
+      <div className="max-w-[1480px] mx-auto px-5 sm:px-8 md:px-10 lg:px-12 h-20 flex items-center justify-between gap-4 w-full">
         {/* Brand Logo */}
         <a className="flex items-center gap-3 group" href="#home">
           <div className="w-10 h-10 rounded-xl overflow-hidden bg-purple-950/40 p-1 flex items-center justify-center border border-purple-500/30 shadow-[0_0_15px_rgba(168,85,247,0.3)] group-hover:border-purple-400 transition-all">

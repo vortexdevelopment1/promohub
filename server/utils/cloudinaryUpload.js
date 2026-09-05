@@ -32,11 +32,37 @@ const uploadStreamToCloudinary = (buffer, resourceType = 'auto', folder = 'stitc
       }
     );
 
-    // Convert the in-memory buffer into a readable stream and pipe to Cloudinary
+// Convert the in-memory buffer into a readable stream and pipe to Cloudinary
     streamifier.createReadStream(buffer).pipe(uploadStream);
   });
 };
 
+/**
+ * ==========================================================
+ * CLOUDINARY DELETE UTILITY
+ * ==========================================================
+ * Safely destroys an asset in Cloudinary given its public_id
+ * and resource_type ('video' or 'image').
+ *
+ * @param {string} publicId - The Cloudinary public_id of the asset
+ * @param {string} resourceType - 'video' or 'image' (default: 'image')
+ * @returns {Promise<Object|null>} Cloudinary result or null if missing/failed
+ */
+const deleteFromCloudinary = async (publicId, resourceType = 'image') => {
+  if (!publicId) return null;
+  try {
+    const result = await cloudinary.uploader.destroy(publicId, {
+      resource_type: resourceType,
+      invalidate: true,
+    });
+    return result;
+  } catch (error) {
+    console.error(`❌ Cloudinary Delete Error [${resourceType} - ${publicId}]:`, error);
+    return null;
+  }
+};
+
 module.exports = {
   uploadStreamToCloudinary,
+  deleteFromCloudinary,
 };

@@ -10,7 +10,9 @@ const mongoose = require('mongoose');
  * - title: Short title of the project / video reel (Required)
  * - description: Brief summary / description of the reel
  * - videoUrl: Cloudinary secure URL of the uploaded video (Required)
+ * - videoPublicId: Cloudinary public_id of the uploaded video
  * - thumbnail: Cloudinary secure URL of the video poster/thumbnail image (Required)
+ * - thumbnailPublicId: Cloudinary public_id of the uploaded thumbnail image
  * - order: Display sequence/priority in the carousel (Default: 0)
  * - createdAt: Timestamp of creation
  */
@@ -30,9 +32,17 @@ const videoSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Video URL is required'],
     },
+    videoPublicId: {
+      type: String,
+      default: '',
+    },
     thumbnail: {
       type: String,
       required: [true, 'Thumbnail image URL is required'],
+    },
+    thumbnailPublicId: {
+      type: String,
+      default: '',
     },
     order: {
       type: Number,

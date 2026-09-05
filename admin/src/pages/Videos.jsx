@@ -208,14 +208,14 @@ const Videos = () => {
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 w-full">
       {/* Top Action Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-purple-500/15">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
             Manage <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-fuchsia-400">Videos</span>
           </h1>
-          <p className="text-xs text-gray-400 mt-1">
+          <p className="text-xs sm:text-sm text-gray-400 mt-1">
             Portfolio video reels. Maximum 10 videos allowed ({videoCount}/10).
           </p>
         </div>
@@ -273,15 +273,15 @@ const Videos = () => {
       )}
 
       {/* Video Table Card */}
-      <div className="rounded-3xl bg-[#110e1c] border border-purple-500/20 shadow-xl overflow-hidden">
+      <div className="w-full rounded-3xl bg-[#110e1c] border border-purple-500/20 shadow-[0_12px_40px_rgba(0,0,0,0.7)] overflow-hidden">
         {loading ? (
-          <div className="py-20 flex flex-col items-center justify-center gap-3 text-purple-400">
-            <div className="w-7 h-7 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+          <div className="py-24 flex flex-col items-center justify-center gap-3 text-purple-400">
+            <div className="w-8 h-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
             <span className="text-xs font-semibold">Loading video catalog...</span>
           </div>
         ) : videos.length === 0 ? (
-          <div className="py-20 text-center flex flex-col items-center gap-4 px-4">
-            <div className="w-16 h-16 rounded-3xl bg-purple-950/40 border border-purple-500/30 flex items-center justify-center text-purple-400">
+          <div className="py-24 text-center flex flex-col items-center gap-4 px-4">
+            <div className="w-16 h-16 rounded-3xl bg-purple-950/40 border border-purple-500/30 flex items-center justify-center text-purple-400 shadow-[0_0_25px_rgba(168,85,247,0.2)]">
               <span className="material-symbols-outlined text-3xl">movie</span>
             </div>
             <div className="max-w-md">
@@ -292,32 +292,32 @@ const Videos = () => {
             </div>
             <button
               onClick={handleOpenAddModal}
-              className="mt-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white text-xs font-bold shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:shadow-[0_0_30px_rgba(168,85,247,0.7)] transition-all"
+              className="mt-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white text-xs font-bold shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:shadow-[0_0_30px_rgba(168,85,247,0.7)] transition-all"
             >
               + Add First Video
             </button>
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto w-full">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-purple-500/20 bg-[#161226]/80 text-[11px] font-bold uppercase tracking-wider text-purple-400">
-                  <th className="py-4 px-6">Thumbnail</th>
-                  <th className="py-4 px-6">Title</th>
-                  <th className="py-4 px-6">Description</th>
-                  <th className="py-4 px-6 text-center">Order</th>
-                  <th className="py-4 px-6 text-right">Actions</th>
+                <tr className="border-b border-purple-500/20 bg-[#161226]/90 text-[11px] font-bold uppercase tracking-wider text-purple-400">
+                  <th className="py-4 px-6 w-36">Thumbnail</th>
+                  <th className="py-4 px-6 min-w-[200px]">Title</th>
+                  <th className="py-4 px-6 min-w-[280px]">Description</th>
+                  <th className="py-4 px-6 text-center w-28">Order</th>
+                  <th className="py-4 px-6 text-right w-44">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-purple-500/10 text-xs text-gray-300">
                 {videos.map((video) => (
                   <tr
                     key={video._id}
-                    className="hover:bg-[#161228]/50 transition-colors group"
+                    className="hover:bg-[#161228]/60 transition-colors group"
                   >
                     {/* Thumbnail */}
-                    <td className="py-4 px-6 w-32">
-                      <div className="relative w-24 h-16 rounded-xl overflow-hidden bg-black border border-purple-500/30 shadow-md">
+                    <td className="py-4 px-6 w-36">
+                      <div className="relative w-28 h-18 rounded-xl overflow-hidden bg-black border border-purple-500/30 shadow-md aspect-video">
                         <img
                           src={video.thumbnail}
                           alt={video.title}
@@ -327,42 +327,42 @@ const Videos = () => {
                           href={video.videoUrl}
                           target="_blank"
                           rel="noreferrer"
-                          className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                          title="Preview Video"
+                          className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-[1px]"
+                          title="Preview Video in New Tab"
                         >
-                          <span className="material-symbols-outlined text-white text-xl">play_circle</span>
+                          <span className="material-symbols-outlined text-white text-2xl">play_circle</span>
                         </a>
                       </div>
                     </td>
 
                     {/* Title */}
-                    <td className="py-4 px-6 max-w-[200px]">
-                      <span className="font-bold text-white text-sm group-hover:text-purple-300 transition-colors block truncate">
+                    <td className="py-4 px-6 min-w-[200px]">
+                      <span className="font-bold text-white text-sm group-hover:text-purple-300 transition-colors block">
                         {video.title}
                       </span>
                     </td>
 
                     {/* Description */}
-                    <td className="py-4 px-6 max-w-xs">
-                      <p className="text-[11px] text-gray-400 line-clamp-2">
+                    <td className="py-4 px-6 min-w-[280px]">
+                      <p className="text-xs text-gray-400 line-clamp-2 leading-relaxed">
                         {video.description || '—'}
                       </p>
                     </td>
 
                     {/* Order */}
-                    <td className="py-4 px-6 text-center w-24">
+                    <td className="py-4 px-6 text-center w-28">
                       <span className="inline-flex items-center justify-center px-3 py-1 rounded-full bg-purple-950/50 border border-purple-500/30 text-purple-300 font-bold text-xs">
                         {video.order ?? 0}
                       </span>
                     </td>
 
                     {/* Actions: Edit & Delete */}
-                    <td className="py-4 px-6 text-right w-40">
+                    <td className="py-4 px-6 text-right w-44">
                       <div className="flex items-center justify-end gap-2">
                         <button
                           type="button"
                           onClick={() => handleOpenEditModal(video)}
-                          className="px-3 py-1.5 rounded-lg bg-purple-600/20 border border-purple-500/30 text-purple-300 hover:bg-purple-600 hover:text-white transition-all text-xs font-semibold flex items-center gap-1"
+                          className="px-3.5 py-1.5 rounded-lg bg-purple-600/20 border border-purple-500/30 text-purple-300 hover:bg-purple-600 hover:text-white transition-all text-xs font-semibold flex items-center gap-1.5"
                           title="Edit Video"
                         >
                           <span className="material-symbols-outlined text-[16px]">edit</span>
@@ -371,7 +371,7 @@ const Videos = () => {
                         <button
                           type="button"
                           onClick={() => handleOpenDeleteModal(video)}
-                          className="px-3 py-1.5 rounded-lg bg-red-950/40 border border-red-500/30 text-red-300 hover:bg-red-600 hover:text-white transition-all text-xs font-semibold flex items-center gap-1"
+                          className="px-3.5 py-1.5 rounded-lg bg-red-950/40 border border-red-500/30 text-red-300 hover:bg-red-600 hover:text-white transition-all text-xs font-semibold flex items-center gap-1.5"
                           title="Delete Video"
                         >
                           <span className="material-symbols-outlined text-[16px]">delete</span>
@@ -391,32 +391,37 @@ const Videos = () => {
       {/* ADD VIDEO MODAL */}
       {/* ========================================================= */}
       {isAddModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-          <div className="relative w-full max-w-xl rounded-3xl bg-[#120e20] border border-purple-500/30 p-6 sm:p-8 shadow-[0_20px_60px_rgba(0,0,0,0.9)] my-8">
-            <div className="flex items-center justify-between pb-4 border-b border-purple-500/20 mb-5">
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-purple-400">video_call</span>
-                <h3 className="text-lg font-extrabold text-white">Add New Video Reel</h3>
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+          <div className="relative w-full max-w-3xl lg:max-w-[820px] rounded-3xl bg-[#120e20] border border-purple-500/30 p-6 sm:p-8 md:p-9 shadow-[0_25px_70px_rgba(0,0,0,0.95),0_0_40px_rgba(168,85,247,0.15)] my-auto max-h-[92vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-4 border-b border-purple-500/20 mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-purple-950/60 border border-purple-500/40 flex items-center justify-center text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.3)]">
+                  <span className="material-symbols-outlined text-2xl">video_call</span>
+                </div>
+                <div>
+                  <h3 className="text-lg sm:text-xl font-extrabold text-white">Add New Video Reel</h3>
+                  <p className="text-xs text-gray-400">Upload video &amp; thumbnail directly to Cloudinary</p>
+                </div>
               </div>
               <button
                 type="button"
                 onClick={() => setIsAddModalOpen(false)}
-                className="w-8 h-8 rounded-full bg-purple-950/40 text-gray-400 hover:text-white flex items-center justify-center"
+                className="w-9 h-9 rounded-full bg-purple-950/40 text-gray-400 hover:text-white hover:bg-purple-900/60 flex items-center justify-center transition-colors border border-purple-500/20"
               >
                 <span className="material-symbols-outlined text-lg">close</span>
               </button>
             </div>
 
             {formError && (
-              <div className="mb-4 p-3 rounded-xl bg-red-950/40 border border-red-500/40 text-red-300 text-xs flex items-center gap-2">
-                <span className="material-symbols-outlined text-base">error</span>
+              <div className="mb-5 p-3.5 rounded-xl bg-red-950/50 border border-red-500/40 text-red-300 text-xs flex items-center gap-2.5 animate-fadeIn">
+                <span className="material-symbols-outlined text-base text-red-400">error</span>
                 <span>{formError}</span>
               </div>
             )}
 
-            <form onSubmit={handleCreateVideo} className="flex flex-col gap-4">
+            <form onSubmit={handleCreateVideo} className="flex flex-col gap-5">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-purple-300 mb-1">
+                <label className="block text-xs font-bold uppercase tracking-wider text-purple-300 mb-1.5">
                   Title *
                 </label>
                 <input
@@ -425,12 +430,12 @@ const Videos = () => {
                   placeholder="e.g. Hyperion AI — Cinematic Product Launch"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#08060c] border border-purple-500/25 text-white text-xs placeholder:text-gray-600 focus:outline-none focus:border-purple-400"
+                  className="w-full px-4 py-3 rounded-xl bg-[#08060c] border border-purple-500/25 text-white text-xs sm:text-sm placeholder:text-gray-600 focus:outline-none focus:border-purple-400 transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-purple-300 mb-1">
+                <label className="block text-xs font-bold uppercase tracking-wider text-purple-300 mb-1.5">
                   Description
                 </label>
                 <textarea
@@ -438,67 +443,73 @@ const Videos = () => {
                   placeholder="Brief summary of the video reel deliverables and metrics..."
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#08060c] border border-purple-500/25 text-white text-xs placeholder:text-gray-600 focus:outline-none focus:border-purple-400"
+                  className="w-full px-4 py-3 rounded-xl bg-[#08060c] border border-purple-500/25 text-white text-xs sm:text-sm placeholder:text-gray-600 focus:outline-none focus:border-purple-400 transition-colors resize-none"
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 {/* Video File Upload */}
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-purple-300 mb-1">
-                    Video Upload *
-                  </label>
+                <div className="p-4 rounded-2xl bg-[#08060c]/80 border border-purple-500/20 flex flex-col justify-between gap-2">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-purple-300 mb-1">
+                      Video File *
+                    </label>
+                    <span className="text-[11px] text-gray-400 block mb-2">Accepts MP4, WebM, MOV (Max 100MB)</span>
+                  </div>
                   <input
                     type="file"
                     accept="video/*"
+                    required
                     onChange={(e) => setVideoFile(e.target.files[0] || null)}
-                    className="w-full text-xs text-gray-400 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700 cursor-pointer bg-[#08060c] p-1.5 rounded-xl border border-purple-500/25"
+                    className="w-full text-xs text-gray-300 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700 cursor-pointer bg-[#120e20] p-1.5 rounded-xl border border-purple-500/30"
                   />
-                  <span className="text-[10px] text-gray-500 block mt-1">MP4, WebM, MOV (Max 100MB)</span>
                 </div>
 
                 {/* Thumbnail Image Upload */}
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-purple-300 mb-1">
-                    Thumbnail Upload *
-                  </label>
+                <div className="p-4 rounded-2xl bg-[#08060c]/80 border border-purple-500/20 flex flex-col justify-between gap-2">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-purple-300 mb-1">
+                      Thumbnail Poster *
+                    </label>
+                    <span className="text-[11px] text-gray-400 block mb-2">Accepts JPG, PNG, WebP (Poster preview)</span>
+                  </div>
                   <input
                     type="file"
                     accept="image/*"
+                    required
                     onChange={(e) => setThumbnailFile(e.target.files[0] || null)}
-                    className="w-full text-xs text-gray-400 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700 cursor-pointer bg-[#08060c] p-1.5 rounded-xl border border-purple-500/25"
+                    className="w-full text-xs text-gray-300 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700 cursor-pointer bg-[#120e20] p-1.5 rounded-xl border border-purple-500/30"
                   />
-                  <span className="text-[10px] text-gray-500 block mt-1">JPG, PNG, WebP</span>
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-purple-300 mb-1">
-                  Order
+              <div className="w-full sm:w-1/3">
+                <label className="block text-xs font-bold uppercase tracking-wider text-purple-300 mb-1.5">
+                  Display Order
                 </label>
                 <input
                   type="number"
                   min="0"
                   value={formData.order}
                   onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value, 10) || 0 })}
-                  className="w-32 px-4 py-2 rounded-xl bg-[#08060c] border border-purple-500/25 text-white text-xs focus:outline-none focus:border-purple-400"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#08060c] border border-purple-500/25 text-white text-xs sm:text-sm focus:outline-none focus:border-purple-400 transition-colors"
                 />
               </div>
 
               {/* Action Buttons */}
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-purple-500/20 mt-2">
+              <div className="flex items-center justify-end gap-3 pt-5 border-t border-purple-500/20 mt-2">
                 <button
                   type="button"
                   disabled={formSubmitting}
                   onClick={() => setIsAddModalOpen(false)}
-                  className="px-4 py-2.5 rounded-xl border border-gray-700 text-gray-300 hover:text-white hover:bg-gray-800 text-xs font-semibold transition-colors"
+                  className="px-5 py-2.5 rounded-xl border border-gray-700 text-gray-300 hover:text-white hover:bg-gray-800 text-xs font-semibold transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={formSubmitting}
-                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white font-bold text-xs shadow-lg hover:shadow-purple-500/50 transition-all flex items-center gap-2 disabled:opacity-50"
+                  className="px-7 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white font-bold text-xs shadow-lg hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] transition-all flex items-center gap-2 disabled:opacity-50"
                 >
                   {formSubmitting ? (
                     <>
@@ -519,12 +530,17 @@ const Videos = () => {
       {/* EDIT VIDEO MODAL */}
       {/* ========================================================= */}
       {isEditModalOpen && activeVideo && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-          <div className="relative w-full max-w-xl rounded-3xl bg-[#120e20] border border-purple-500/30 p-6 sm:p-8 shadow-[0_20px_60px_rgba(0,0,0,0.9)] my-8">
-            <div className="flex items-center justify-between pb-4 border-b border-purple-500/20 mb-5">
-              <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-purple-400">edit_note</span>
-                <h3 className="text-lg font-extrabold text-white">Edit Video Reel</h3>
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+          <div className="relative w-full max-w-3xl lg:max-w-[820px] rounded-3xl bg-[#120e20] border border-purple-500/30 p-6 sm:p-8 md:p-9 shadow-[0_25px_70px_rgba(0,0,0,0.95),0_0_40px_rgba(168,85,247,0.15)] my-auto max-h-[92vh] overflow-y-auto">
+            <div className="flex items-center justify-between pb-4 border-b border-purple-500/20 mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-purple-950/60 border border-purple-500/40 flex items-center justify-center text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.3)]">
+                  <span className="material-symbols-outlined text-2xl">edit_note</span>
+                </div>
+                <div>
+                  <h3 className="text-lg sm:text-xl font-extrabold text-white">Edit Video Reel</h3>
+                  <p className="text-xs text-gray-400">Update metadata or replace video/thumbnail</p>
+                </div>
               </div>
               <button
                 type="button"
@@ -532,22 +548,22 @@ const Videos = () => {
                   setIsEditModalOpen(false);
                   setActiveVideo(null);
                 }}
-                className="w-8 h-8 rounded-full bg-purple-950/40 text-gray-400 hover:text-white flex items-center justify-center"
+                className="w-9 h-9 rounded-full bg-purple-950/40 text-gray-400 hover:text-white hover:bg-purple-900/60 flex items-center justify-center transition-colors border border-purple-500/20"
               >
                 <span className="material-symbols-outlined text-lg">close</span>
               </button>
             </div>
 
             {formError && (
-              <div className="mb-4 p-3 rounded-xl bg-red-950/40 border border-red-500/40 text-red-300 text-xs flex items-center gap-2">
-                <span className="material-symbols-outlined text-base">error</span>
+              <div className="mb-5 p-3.5 rounded-xl bg-red-950/50 border border-red-500/40 text-red-300 text-xs flex items-center gap-2.5 animate-fadeIn">
+                <span className="material-symbols-outlined text-base text-red-400">error</span>
                 <span>{formError}</span>
               </div>
             )}
 
-            <form onSubmit={handleUpdateVideo} className="flex flex-col gap-4">
+            <form onSubmit={handleUpdateVideo} className="flex flex-col gap-5">
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-purple-300 mb-1">
+                <label className="block text-xs font-bold uppercase tracking-wider text-purple-300 mb-1.5">
                   Title *
                 </label>
                 <input
@@ -555,67 +571,75 @@ const Videos = () => {
                   required
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#08060c] border border-purple-500/25 text-white text-xs focus:outline-none focus:border-purple-400"
+                  className="w-full px-4 py-3 rounded-xl bg-[#08060c] border border-purple-500/25 text-white text-xs sm:text-sm focus:outline-none focus:border-purple-400 transition-colors"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-purple-300 mb-1">
+                <label className="block text-xs font-bold uppercase tracking-wider text-purple-300 mb-1.5">
                   Description
                 </label>
                 <textarea
                   rows="3"
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#08060c] border border-purple-500/25 text-white text-xs focus:outline-none focus:border-purple-400"
+                  className="w-full px-4 py-3 rounded-xl bg-[#08060c] border border-purple-500/25 text-white text-xs sm:text-sm focus:outline-none focus:border-purple-400 transition-colors resize-none"
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 {/* Video Replacement */}
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-purple-300 mb-1">
-                    Replace Video (Optional)
-                  </label>
+                <div className="p-4 rounded-2xl bg-[#08060c]/80 border border-purple-500/20 flex flex-col justify-between gap-2">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-purple-300 mb-1">
+                      Replace Video (Optional)
+                    </label>
+                    <span className="text-[10px] text-gray-400 block mb-2 truncate" title={formData.videoUrl}>
+                      Current: {formData.videoUrl}
+                    </span>
+                  </div>
                   <input
                     type="file"
                     accept="video/*"
                     onChange={(e) => setVideoFile(e.target.files[0] || null)}
-                    className="w-full text-xs text-gray-400 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700 cursor-pointer bg-[#08060c] p-1.5 rounded-xl border border-purple-500/25"
+                    className="w-full text-xs text-gray-300 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700 cursor-pointer bg-[#120e20] p-1.5 rounded-xl border border-purple-500/30"
                   />
-                  <span className="text-[10px] text-gray-500 block mt-1 truncate">Current: {formData.videoUrl}</span>
                 </div>
 
                 {/* Thumbnail Replacement */}
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-purple-300 mb-1">
-                    Replace Thumbnail (Optional)
-                  </label>
+                <div className="p-4 rounded-2xl bg-[#08060c]/80 border border-purple-500/20 flex flex-col justify-between gap-2">
+                  <div>
+                    <label className="block text-xs font-bold uppercase tracking-wider text-purple-300 mb-1">
+                      Replace Thumbnail (Optional)
+                    </label>
+                    <span className="text-[10px] text-gray-400 block mb-2 truncate" title={formData.thumbnail}>
+                      Current: {formData.thumbnail}
+                    </span>
+                  </div>
                   <input
                     type="file"
                     accept="image/*"
                     onChange={(e) => setThumbnailFile(e.target.files[0] || null)}
-                    className="w-full text-xs text-gray-400 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700 cursor-pointer bg-[#08060c] p-1.5 rounded-xl border border-purple-500/25"
+                    className="w-full text-xs text-gray-300 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700 cursor-pointer bg-[#120e20] p-1.5 rounded-xl border border-purple-500/30"
                   />
-                  <span className="text-[10px] text-gray-500 block mt-1 truncate">Current: {formData.thumbnail}</span>
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-purple-300 mb-1">
-                  Order
+              <div className="w-full sm:w-1/3">
+                <label className="block text-xs font-bold uppercase tracking-wider text-purple-300 mb-1.5">
+                  Display Order
                 </label>
                 <input
                   type="number"
                   min="0"
                   value={formData.order}
                   onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value, 10) || 0 })}
-                  className="w-32 px-4 py-2 rounded-xl bg-[#08060c] border border-purple-500/25 text-white text-xs focus:outline-none focus:border-purple-400"
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#08060c] border border-purple-500/25 text-white text-xs sm:text-sm focus:outline-none focus:border-purple-400 transition-colors"
                 />
               </div>
 
               {/* Action Buttons */}
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-purple-500/20 mt-2">
+              <div className="flex items-center justify-end gap-3 pt-5 border-t border-purple-500/20 mt-2">
                 <button
                   type="button"
                   disabled={formSubmitting}
@@ -623,14 +647,14 @@ const Videos = () => {
                     setIsEditModalOpen(false);
                     setActiveVideo(null);
                   }}
-                  className="px-4 py-2.5 rounded-xl border border-gray-700 text-gray-300 hover:text-white hover:bg-gray-800 text-xs font-semibold transition-colors"
+                  className="px-5 py-2.5 rounded-xl border border-gray-700 text-gray-300 hover:text-white hover:bg-gray-800 text-xs font-semibold transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={formSubmitting}
-                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white font-bold text-xs shadow-lg hover:shadow-purple-500/50 transition-all flex items-center gap-2 disabled:opacity-50"
+                  className="px-7 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-fuchsia-600 text-white font-bold text-xs shadow-lg hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] transition-all flex items-center gap-2 disabled:opacity-50"
                 >
                   {formSubmitting ? (
                     <>
@@ -652,12 +676,12 @@ const Videos = () => {
       {/* ========================================================= */}
       {isDeleteModalOpen && activeVideo && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="relative w-full max-w-md rounded-3xl bg-[#120e20] border border-red-500/30 p-6 sm:p-8 shadow-[0_20px_60px_rgba(0,0,0,0.9)] text-center">
-            <div className="w-14 h-14 rounded-2xl bg-red-950/60 border border-red-500/40 text-red-400 flex items-center justify-center mx-auto mb-4">
+          <div className="relative w-full max-w-md rounded-3xl bg-[#120e20] border border-red-500/30 p-6 sm:p-8 shadow-[0_25px_70px_rgba(0,0,0,0.95)] text-center">
+            <div className="w-14 h-14 rounded-2xl bg-red-950/60 border border-red-500/40 text-red-400 flex items-center justify-center mx-auto mb-4 shadow-[0_0_20px_rgba(239,68,68,0.3)]">
               <span className="material-symbols-outlined text-3xl">warning</span>
             </div>
             <h3 className="text-lg font-bold text-white mb-2">Delete Video Reel?</h3>
-            <p className="text-xs text-gray-300 mb-6">
+            <p className="text-xs text-gray-300 mb-6 leading-relaxed">
               Are you sure you want to delete <strong>"{activeVideo.title}"</strong>? This will remove the video from the public portfolio carousel.
             </p>
 

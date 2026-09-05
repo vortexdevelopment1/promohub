@@ -4,7 +4,7 @@ import founderImage from "@/assets/images/founder.jpg";
 const Founder = () => {
   return (
     <section className="py-8 sm:py-10 md:py-12 relative" id="founder">
-      <div id="about" className="max-w-[1340px] mx-auto px-5 sm:px-8">
+      <div id="about" className="max-w-[1480px] mx-auto px-5 sm:px-8 md:px-10 lg:px-12 w-full">
         <div className="relative rounded-3xl bg-gradient-to-r from-[#110e1c] to-[#151224] border border-purple-500/25 p-8 sm:p-12 overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.6)]">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Left: Founder Cutout/Framed Portrait with Circular Neon Halo */}

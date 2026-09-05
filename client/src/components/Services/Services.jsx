@@ -4,7 +4,7 @@ import { services } from '../../data/services';
 const Services = () => {
   return (
     <section className="py-10 sm:py-12 md:py-16 relative" id="services">
-      <div className="max-w-[1340px] mx-auto px-5 sm:px-8">
+      <div className="max-w-[1480px] mx-auto px-5 sm:px-8 md:px-10 lg:px-12 w-full">
         {/* Header row */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 sm:mb-12">
           <div className="flex flex-col gap-2 max-w-xl">

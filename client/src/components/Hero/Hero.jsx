@@ -55,7 +55,7 @@ const Hero = () => {
 
   return (
     <section className="relative pt-8 sm:pt-10 md:pt-12 pb-12 sm:pb-14 md:pb-16 overflow-hidden">
-      <div className="max-w-[1340px] mx-auto px-5 sm:px-8 w-full">
+      <div className="max-w-[1480px] mx-auto px-5 sm:px-8 md:px-10 lg:px-12 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center min-h-[70vh]">
           {/* Left Column: Typography & CTAs */}
           <div className="lg:col-span-6 flex flex-col items-start gap-5 sm:gap-6">

@@ -39,7 +39,7 @@ const Contact = () => {
 
   return (
     <section className="py-10 sm:py-12 md:py-16 relative" id="contact">
-      <div className="max-w-[1340px] mx-auto px-5 sm:px-8">
+      <div className="max-w-[1480px] mx-auto px-5 sm:px-8 md:px-10 lg:px-12 w-full">
         <div className="relative rounded-3xl bg-[#110e1c]/90 border border-purple-500/25 p-8 sm:p-12 overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.8)]">
           {/* Decorative Purple Arch */}
           <div className="absolute -bottom-16 -right-16 w-48 h-48 rounded-full border-[14px] border-purple-600/30 pointer-events-none blur-[1px]"></div>

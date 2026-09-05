@@ -4,7 +4,7 @@ import { testimonials } from '../../data/testimonials';
 const Testimonials = () => {
   return (
     <section className="py-10 sm:py-12 md:py-16 relative" id="testimonials">
-      <div className="max-w-[1340px] mx-auto px-5 sm:px-8">
+      <div className="max-w-[1480px] mx-auto px-5 sm:px-8 md:px-10 lg:px-12 w-full">
         {/* Header */}
         <div className="flex items-center justify-between gap-4 mb-8 sm:mb-10">
           <div className="flex flex-col gap-1">
