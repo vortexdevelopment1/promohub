@@ -24,11 +24,19 @@ const Founder = () => {
             <div className="md:col-span-7 flex flex-col items-start gap-4">
               <span className="text-[11px] font-bold tracking-[0.2em] uppercase text-purple-400">FOUNDER</span>
               <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
-                Hi, I'm <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-fuchsia-400">Varun Soni</span>
+                Varun <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-fuchsia-400">Soni</span>
               </h2>
-              <p className="text-sm sm:text-base font-semibold text-purple-300">
-                Founder, Promo Hub | 2+ Years of Experience in Digital Marketing
-              </p>
+              <div className="flex flex-col gap-2 text-sm sm:text-base text-gray-300 leading-relaxed font-normal">
+                <p>
+                  I’m a Video Editor, Social Media Manager &amp; AI Video Creator helping brands grow through creative content and smart digital strategies.
+                </p>
+                <p>
+                  I turn ideas into content that connects, engages &amp; grows.
+                </p>
+                <p className="text-sm sm:text-base font-semibold text-purple-300">
+                  2+ Years Experience | Creative &amp; Digital Marketing
+                </p>
+              </div>
 
               {/* Founder Contact Pills with Purple Badges */}
               <div className="flex flex-wrap items-center gap-3 pt-2">

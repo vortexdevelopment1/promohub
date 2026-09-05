@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import logoImg from '../assets/images/logo.png';
 
 /**
  * ==========================================================
@@ -27,13 +28,12 @@ const AdminLayout = () => {
     <div className="min-h-screen bg-[#08060c] text-gray-200 flex flex-col md:flex-row antialiased selection:bg-purple-600 selection:text-white">
       {/* Mobile Top Header */}
       <div className="md:hidden flex items-center justify-between px-5 py-4 bg-[#0d0a17] border-b border-purple-500/20 z-40">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-purple-950/60 flex items-center justify-center border border-purple-500/30 text-purple-400">
-            <span className="material-symbols-outlined text-lg">admin_panel_settings</span>
-          </div>
-          <span className="font-extrabold text-white text-sm tracking-wider">
-            NEXA <span className="text-purple-400">ADMIN</span>
-          </span>
+        <div className="flex items-center">
+          <img
+            src={logoImg}
+            alt="Promo Hub"
+            className="h-9 w-auto object-contain"
+          />
         </div>
         <button
           type="button"
@@ -62,16 +62,12 @@ const AdminLayout = () => {
       >
         <div className="flex flex-col gap-8">
           {/* Admin Header */}
-          <div className="flex items-center gap-3 px-2 pt-2">
-            <div className="w-10 h-10 rounded-xl bg-purple-950/50 p-1.5 flex items-center justify-center border border-purple-500/30 shadow-[0_0_15px_rgba(168,85,247,0.3)]">
-              <span className="material-symbols-outlined text-purple-400 text-2xl">admin_panel_settings</span>
-            </div>
-            <div>
-              <h1 className="font-extrabold text-white text-base tracking-wider leading-tight">
-                NEXA <span className="text-purple-400">ADMIN</span>
-              </h1>
-              <p className="text-[10px] text-gray-400">Portfolio Studio</p>
-            </div>
+          <div className="flex items-center justify-center px-2 pt-2">
+            <img
+              src={logoImg}
+              alt="Promo Hub"
+              className="h-[78px] w-auto max-w-full object-contain"
+            />
           </div>
 
           {/* Navigation Links: Videos */}

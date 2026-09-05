@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import logoImg from '../../assets/images/logo.png';
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -17,17 +18,12 @@ const Navbar = () => {
     <header className="fixed top-0 inset-x-0 z-50 bg-[#08060c]/85 backdrop-blur-xl border-b border-purple-500/15">
       <div className="max-w-[1480px] mx-auto px-5 sm:px-8 md:px-10 lg:px-12 h-20 flex items-center justify-between gap-4 w-full">
         {/* Brand Logo */}
-        <a className="flex items-center gap-3 group" href="#home">
-          <div className="w-10 h-10 rounded-xl overflow-hidden bg-purple-950/40 p-1 flex items-center justify-center border border-purple-500/30 shadow-[0_0_15px_rgba(168,85,247,0.3)] group-hover:border-purple-400 transition-all">
-            <img
-              alt="Promo Hub Logo"
-              className="w-full h-full object-contain"
-              src="https://lh3.googleusercontent.com/aida/AEtjO1W2miHYw4WQQHw4yaKj1OyxAodPGe-CJhKIU7atKX2phLDUmoHYJI4hxeOOgd8E5u0ecuPDHN7eHMHXuQCxACoJEj250DFX6AO3FLWk6McIN-nceDH1KGV8_9HHoKPk0PVm6y81q7c4--FJWuqc4Hkuh5KFyteggOG03iekWbYy-gdHW_-1c7WXaPufV_idmVVHT8kuJ-CKt8P1MkwuBOHZdudGNcGw6qPTr9-p9r_pUMl_tmHj_71iOnMq"
-            />
-          </div>
-          <span className="font-extrabold tracking-wider text-white text-lg">
-            PROMO <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-fuchsia-400">HUB</span>
-          </span>
+        <a className="flex items-center group" href="#home">
+          <img
+            src={logoImg}
+            alt="Promo Hub Logo"
+            className="h-16 sm:h-[72px] md:h-[86px] w-auto object-contain translate-y-1 sm:translate-y-1.5 transition-transform duration-300 group-hover:scale-105"
+          />
         </a>
 
         {/* Desktop Navigation Menu */}
