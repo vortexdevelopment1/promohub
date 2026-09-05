@@ -17,6 +17,8 @@ const ReelModal = ({ projectsList, initialIndex, onClose, onNavigate }) => {
   const [currentIndex, setCurrentIndex] = useState(initialIndex || 0);
   const [isMuted, setIsMuted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
+  const [isVideoLoading, setIsVideoLoading] = useState(true);
+  const [hasVideoError, setHasVideoError] = useState(false);
   const videoRef = useRef(null);
   const currentProject = projectsList[currentIndex] || projectsList[0];
 
@@ -26,10 +28,17 @@ const ReelModal = ({ projectsList, initialIndex, onClose, onNavigate }) => {
     setCurrentIndex(initialIndex);
   }, [initialIndex]);
 
+  useEffect(() => {
+    setIsVideoLoading(true);
+    setHasVideoError(false);
+  }, [currentIndex]);
+
   const handleNext = useCallback(() => {
     const nextIdx = (currentIndex + 1) % projectsList.length;
     setCurrentIndex(nextIdx);
     setIsPlaying(true);
+    setIsVideoLoading(true);
+    setHasVideoError(false);
     if (onNavigate) {
       onNavigate(projectsList[nextIdx].id);
     }
@@ -39,6 +48,8 @@ const ReelModal = ({ projectsList, initialIndex, onClose, onNavigate }) => {
     const prevIdx = (currentIndex - 1 + projectsList.length) % projectsList.length;
     setCurrentIndex(prevIdx);
     setIsPlaying(true);
+    setIsVideoLoading(true);
+    setHasVideoError(false);
     if (onNavigate) {
       onNavigate(projectsList[prevIdx].id);
     }
@@ -141,6 +152,25 @@ const ReelModal = ({ projectsList, initialIndex, onClose, onNavigate }) => {
         className="relative h-[85vh] max-h-[800px] aspect-[9/16] bg-black rounded-3xl overflow-hidden border border-purple-500/30 shadow-[0_0_50px_rgba(168,85,247,0.35)] flex items-center justify-center"
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Subtle Video Loading State */}
+        {isVideoLoading && !hasVideoError && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 backdrop-blur-xs pointer-events-none z-20">
+            <div className="w-10 h-10 rounded-full border-2 border-purple-500/20 border-t-purple-400 animate-spin mb-3" />
+            <span className="text-xs font-medium text-purple-300 tracking-wide animate-pulse">
+              Loading Video...
+            </span>
+          </div>
+        )}
+
+        {/* Video Error Fallback */}
+        {hasVideoError && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/90 p-6 text-center z-20">
+            <span className="material-symbols-outlined text-4xl text-red-400/80 mb-2">videocam_off</span>
+            <p className="text-sm font-semibold text-gray-200 mb-1">Unable to load video</p>
+            <p className="text-xs text-gray-400">Please check your network connection or try another reel.</p>
+          </div>
+        )}
+
         <video
           ref={videoRef}
           key={currentProject.id}
@@ -149,13 +179,25 @@ const ReelModal = ({ projectsList, initialIndex, onClose, onNavigate }) => {
           autoPlay
           playsInline
           muted={isMuted}
+          onLoadStart={() => {
+            setIsVideoLoading(true);
+            setHasVideoError(false);
+          }}
+          onLoadedData={() => setIsVideoLoading(false)}
+          onCanPlay={() => setIsVideoLoading(false)}
+          onPlaying={() => setIsVideoLoading(false)}
+          onWaiting={() => setIsVideoLoading(true)}
+          onError={() => {
+            setIsVideoLoading(false);
+            setHasVideoError(true);
+          }}
           onEnded={handleNext}
           onClick={togglePlay}
           className="w-full h-full object-cover cursor-pointer"
         />
 
         {/* Play Icon Overlay when paused */}
-        {!isPlaying && (
+        {!isPlaying && !isVideoLoading && !hasVideoError && (
           <div
             onClick={togglePlay}
             className="absolute inset-0 flex items-center justify-center bg-black/35 cursor-pointer z-10"
@@ -177,6 +219,71 @@ const ReelModal = ({ projectsList, initialIndex, onClose, onNavigate }) => {
             {currentIndex + 1} / {projectsList.length}
           </span>
         </div>
+      </div>
+    </div>
+  );
+};
+
+// Individual Portfolio Card with independent loading and error state
+const PortfolioCard = ({ project, onClick }) => {
+  const [mediaStatus, setMediaStatus] = useState('loading'); // 'loading' | 'loaded' | 'error'
+
+  return (
+    <div
+      onClick={onClick}
+      className="group relative w-full aspect-[4/3] rounded-2xl sm:rounded-3xl overflow-hidden border border-purple-500/30 bg-[#110e1c] shadow-[0_12px_35px_rgba(0,0,0,0.8),0_0_20px_rgba(168,85,247,0.2)] hover:border-purple-400/60 hover:shadow-[0_15px_45px_rgba(0,0,0,0.9),0_0_30px_rgba(168,85,247,0.35)] transition-all duration-300 cursor-pointer select-none"
+    >
+      {/* Loading State Placeholder */}
+      {mediaStatus === 'loading' && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#110e1c] z-10">
+          <div className="w-8 h-8 rounded-full border-2 border-purple-500/20 border-t-purple-400 animate-spin mb-2" />
+          <span className="text-[11px] font-medium text-purple-300/80 tracking-wide animate-pulse">
+            Loading...
+          </span>
+        </div>
+      )}
+
+      {/* Error / Fallback State */}
+      {mediaStatus === 'error' && (
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#110e1c] p-4 text-center z-10">
+          <span className="material-symbols-outlined text-2xl text-purple-400/60 mb-1">
+            broken_image
+          </span>
+          <span className="text-xs text-gray-400">Unable to load preview</span>
+        </div>
+      )}
+
+      {/* Clean Poster Thumbnail Image */}
+      <img
+        alt={project.alt || project.title}
+        className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-105 ${
+          mediaStatus === 'loaded' ? 'opacity-100' : 'opacity-0'
+        }`}
+        src={project.image}
+        loading="lazy"
+        onLoad={() => setMediaStatus('loaded')}
+        onError={() => setMediaStatus('error')}
+      />
+
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 pointer-events-none" />
+
+      {/* Center Play Button Overlay */}
+      {mediaStatus === 'loaded' && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="w-11 h-11 rounded-full bg-purple-600/90 border border-purple-400/50 text-white flex items-center justify-center shadow-[0_0_20px_rgba(168,85,247,0.8)] group-hover:scale-110 transition-all duration-300">
+            <span className="material-symbols-outlined text-[22px] ml-0.5 material-symbols-fill">
+              play_arrow
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* Minimal Title at Bottom */}
+      <div className="absolute bottom-3 inset-x-3 pointer-events-none">
+        <h4 className="text-xs sm:text-sm font-bold text-white truncate drop-shadow-md group-hover:text-purple-300 transition-colors">
+          {project.title}
+        </h4>
       </div>
     </div>
   );
@@ -381,37 +488,10 @@ const Portfolio = () => {
             >
               {projectsList.map((project) => (
                 <SwiperSlide key={project.id} className="!h-auto flex items-center justify-center">
-                  <div
+                  <PortfolioCard
+                    project={project}
                     onClick={() => handleCardClick(project)}
-                    className="group relative w-full aspect-[4/3] rounded-2xl sm:rounded-3xl overflow-hidden border border-purple-500/30 bg-[#110e1c] shadow-[0_12px_35px_rgba(0,0,0,0.8),0_0_20px_rgba(168,85,247,0.2)] hover:border-purple-400/60 hover:shadow-[0_15px_45px_rgba(0,0,0,0.9),0_0_30px_rgba(168,85,247,0.35)] transition-all duration-300 cursor-pointer select-none"
-                  >
-                    {/* Clean Poster Thumbnail Image */}
-                    <img
-                      alt={project.alt || project.title}
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      src={project.image}
-                      loading="lazy"
-                    />
-
-                    {/* Gradient Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 pointer-events-none" />
-
-                    {/* Center Play Button Overlay */}
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                      <div className="w-11 h-11 rounded-full bg-purple-600/90 border border-purple-400/50 text-white flex items-center justify-center shadow-[0_0_20px_rgba(168,85,247,0.8)] group-hover:scale-110 transition-all duration-300">
-                        <span className="material-symbols-outlined text-[22px] ml-0.5 material-symbols-fill">
-                          play_arrow
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Minimal Title at Bottom */}
-                    <div className="absolute bottom-3 inset-x-3 pointer-events-none">
-                      <h4 className="text-xs sm:text-sm font-bold text-white truncate drop-shadow-md group-hover:text-purple-300 transition-colors">
-                        {project.title}
-                      </h4>
-                    </div>
-                  </div>
+                  />
                 </SwiperSlide>
               ))}
             </Swiper>
