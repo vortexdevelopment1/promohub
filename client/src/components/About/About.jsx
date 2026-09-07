@@ -1,10 +1,16 @@
 import React from 'react';
+import useScrollReveal from '../../hooks/useScrollReveal';
 
 const About = () => {
+  const [sectionRef, isVisible] = useScrollReveal();
+
   return (
     <section className="py-8 sm:py-10 md:py-12 relative" id="about">
       <div className="max-w-[1480px] mx-auto px-5 sm:px-8 md:px-10 lg:px-12 w-full">
-        <div className="relative rounded-3xl bg-gradient-to-r from-[#110e1c] to-[#151224] border border-purple-500/25 p-8 sm:p-12 overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.6)]">
+        <div
+          ref={sectionRef}
+          className={`reveal-section ${isVisible ? 'is-revealed' : ''} relative rounded-3xl bg-gradient-to-r from-[#110e1c] to-[#151224] border border-purple-500/25 p-8 sm:p-12 overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.6)]`}
+        >
           {/* Ambient Glow */}
           <div className="absolute top-0 right-0 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl pointer-events-none"></div>
 

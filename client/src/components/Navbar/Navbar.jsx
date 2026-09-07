@@ -22,7 +22,7 @@ const Navbar = () => {
           <img
             src={logoImg}
             alt="Promo Hub Logo"
-            className="h-16 sm:h-[72px] md:h-[86px] w-auto object-contain translate-y-1 sm:translate-y-1.5 transition-transform duration-300 group-hover:scale-105"
+            className="h-12 sm:h-14 md:h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
           />
         </a>
 

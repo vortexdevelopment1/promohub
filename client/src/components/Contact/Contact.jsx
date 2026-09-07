@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import useScrollReveal from '../../hooks/useScrollReveal';
 
 const Contact = () => {
+  const [sectionRef, isVisible] = useScrollReveal();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -40,7 +42,10 @@ const Contact = () => {
   return (
     <section className="py-10 sm:py-12 md:py-16 relative" id="contact">
       <div className="max-w-[1480px] mx-auto px-5 sm:px-8 md:px-10 lg:px-12 w-full">
-        <div className="relative rounded-3xl bg-[#110e1c]/90 border border-purple-500/25 p-8 sm:p-12 overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.8)]">
+        <div
+          ref={sectionRef}
+          className={`reveal-section ${isVisible ? 'is-revealed' : ''} relative rounded-3xl bg-[#110e1c]/90 border border-purple-500/25 p-8 sm:p-12 overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.8)]`}
+        >
           {/* Decorative Purple Arch */}
           <div className="absolute -bottom-16 -right-16 w-48 h-48 rounded-full border-[14px] border-purple-600/30 pointer-events-none blur-[1px]"></div>
 
@@ -56,7 +61,7 @@ const Contact = () => {
                 </p>
                 <div className="mt-4">
                   <a
-                    className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-xs font-bold shadow-lg"
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-xs font-bold shadow-lg hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
                     href="mailto:promo.hub9977@gmail.com"
                   >
                     <span>Let's Talk Now</span>
@@ -69,14 +74,14 @@ const Contact = () => {
               <div className="space-y-3 pt-6 border-t border-purple-500/15">
                 <a
                   href="tel:+919977978575"
-                  className="flex items-center gap-3 text-xs text-gray-300 hover:text-white transition-colors"
+                  className="flex items-center gap-3 text-xs text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300"
                 >
                   <span className="material-symbols-outlined text-purple-400 text-[18px]">phone</span>
                   <span>+91 99779 78575</span>
                 </a>
                 <a
                   href="mailto:promo.hub9977@gmail.com"
-                  className="flex items-center gap-3 text-xs text-gray-300 hover:text-white transition-colors"
+                  className="flex items-center gap-3 text-xs text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300"
                 >
                   <span className="material-symbols-outlined text-purple-400 text-[18px]">mail</span>
                   <span>promo.hub9977@gmail.com</span>
@@ -92,7 +97,7 @@ const Contact = () => {
                 {socialLinks.map((item, idx) => (
                   <a
                     key={idx}
-                    className="w-8 h-8 rounded-full bg-[#08060c] border border-purple-500/20 text-gray-300 hover:text-white hover:border-purple-400 flex items-center justify-center text-xs transition-colors"
+                    className="w-8 h-8 rounded-full bg-[#08060c] border border-purple-500/20 text-gray-300 hover:text-white hover:border-purple-400 hover:scale-110 flex items-center justify-center text-xs transition-all duration-300"
                     href={item.href}
                     target="_blank"
                     rel="noreferrer"
@@ -112,7 +117,7 @@ const Contact = () => {
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-xl bg-[#08060c] border border-purple-500/20 text-white placeholder-gray-500 text-xs focus:outline-none focus:border-purple-400 transition-colors"
+                    className="w-full px-4 py-3 rounded-xl bg-[#08060c] border border-purple-500/20 text-white placeholder-gray-500 text-xs focus:outline-none focus:border-purple-400 focus:ring-1 focus:ring-purple-400/30 transition-all duration-300"
                     placeholder="Your Name"
                     required
                     type="text"
@@ -121,7 +126,7 @@ const Contact = () => {
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-xl bg-[#08060c] border border-purple-500/20 text-white placeholder-gray-500 text-xs focus:outline-none focus:border-purple-400 transition-colors"
+                    className="w-full px-4 py-3 rounded-xl bg-[#08060c] border border-purple-500/20 text-white placeholder-gray-500 text-xs focus:outline-none focus:border-purple-400 focus:ring-1 focus:ring-purple-400/30 transition-all duration-300"
                     placeholder="Your Email"
                     required
                     type="email"
@@ -132,7 +137,7 @@ const Contact = () => {
                     name="phone"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-xl bg-[#08060c] border border-purple-500/20 text-white placeholder-gray-500 text-xs focus:outline-none focus:border-purple-400 transition-colors"
+                    className="w-full px-4 py-3 rounded-xl bg-[#08060c] border border-purple-500/20 text-white placeholder-gray-500 text-xs focus:outline-none focus:border-purple-400 focus:ring-1 focus:ring-purple-400/30 transition-all duration-300"
                     placeholder="Phone Number"
                     required
                     type="text"
@@ -141,7 +146,7 @@ const Contact = () => {
                     name="service"
                     value={formData.service}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-xl bg-[#08060c] border border-purple-500/20 text-white placeholder-gray-500 text-xs focus:outline-none focus:border-purple-400 transition-colors"
+                    className="w-full px-4 py-3 rounded-xl bg-[#08060c] border border-purple-500/20 text-white placeholder-gray-500 text-xs focus:outline-none focus:border-purple-400 focus:ring-1 focus:ring-purple-400/30 transition-all duration-300"
                     placeholder="Service Required"
                     required
                     type="text"
@@ -152,14 +157,14 @@ const Contact = () => {
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
-                    className="w-full px-4 py-3 rounded-xl bg-[#08060c] border border-purple-500/20 text-white placeholder-gray-500 text-xs focus:outline-none focus:border-purple-400 transition-colors resize-none"
+                    className="w-full px-4 py-3 rounded-xl bg-[#08060c] border border-purple-500/20 text-white placeholder-gray-500 text-xs focus:outline-none focus:border-purple-400 focus:ring-1 focus:ring-purple-400/30 transition-all duration-300 resize-none"
                     placeholder="Your Message"
                     required
                     rows={4}
                   ></textarea>
                 </div>
                 <button
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-purple-600 via-fuchsia-600 to-indigo-600 text-white text-xs font-bold tracking-wide shadow-[0_0_25px_rgba(168,85,247,0.5)] hover:shadow-[0_0_35px_rgba(168,85,247,0.8)] hover:scale-[1.01] transition-all cursor-pointer"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-purple-600 via-fuchsia-600 to-indigo-600 text-white text-xs font-bold tracking-wide shadow-[0_0_25px_rgba(168,85,247,0.5)] hover:shadow-[0_0_35px_rgba(168,85,247,0.8)] hover:scale-[1.01] active:scale-[0.99] transition-all duration-300 cursor-pointer"
                   type="submit"
                 >
                   <span>Send Message</span>

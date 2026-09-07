@@ -1,10 +1,16 @@
 import React from 'react';
 import { services } from '../../data/services';
+import useScrollReveal from '../../hooks/useScrollReveal';
 
 const Services = () => {
+  const [sectionRef, isVisible] = useScrollReveal();
+
   return (
     <section className="py-10 sm:py-12 md:py-16 relative" id="services">
-      <div className="max-w-[1480px] mx-auto px-5 sm:px-8 md:px-10 lg:px-12 w-full">
+      <div
+        ref={sectionRef}
+        className={`reveal-section ${isVisible ? 'is-revealed' : ''} max-w-[1480px] mx-auto px-5 sm:px-8 md:px-10 lg:px-12 w-full`}
+      >
         {/* Header row */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10 sm:mb-12">
           <div className="flex flex-col gap-2 max-w-xl">
@@ -21,7 +27,7 @@ const Services = () => {
               End-to-end digital marketing services designed to build your brand, engage your audience and deliver measurable results.
             </p>
             <a
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-purple-500/30 text-xs font-semibold text-gray-300 hover:text-white hover:border-purple-400 transition-colors"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-purple-500/30 text-xs font-semibold text-gray-300 hover:text-white hover:border-purple-400 hover:scale-[1.02] transition-all duration-300"
               href="#contact"
             >
               <span>View All Services</span>
@@ -30,17 +36,17 @@ const Services = () => {
           </div>
         </div>
 
-        {/* 6 Services Cards */}
+        {/* 6 Services Cards with subtle lift & glow on hover */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
           {services.map((service) => (
             <div
               key={service.id}
-              className="p-6 rounded-2xl bg-[#110e1c]/80 border border-purple-500/20 hover:border-purple-400/50 hover:bg-[#151224] transition-all group flex flex-col items-center text-center"
+              className="p-6 rounded-2xl bg-[#110e1c]/80 border border-purple-500/20 hover:border-purple-400/50 hover:bg-[#151224] hover:-translate-y-1.5 hover:scale-[1.015] hover:shadow-[0_12px_30px_rgba(168,85,247,0.18)] transition-all duration-300 group flex flex-col items-center text-center cursor-default"
             >
-              <div className="w-12 h-12 rounded-xl bg-purple-950/60 border border-purple-500/30 flex items-center justify-center text-purple-300 mb-4 group-hover:scale-110 group-hover:border-purple-400 group-hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all">
+              <div className="w-12 h-12 rounded-xl bg-purple-950/60 border border-purple-500/30 flex items-center justify-center text-purple-300 mb-4 group-hover:scale-110 group-hover:border-purple-400 group-hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all duration-300">
                 <span className="material-symbols-outlined text-[24px]">{service.icon}</span>
               </div>
-              <h3 className="text-sm font-bold text-white mb-2 group-hover:text-purple-300 transition-colors">
+              <h3 className="text-sm font-bold text-white mb-2 group-hover:text-purple-300 transition-colors duration-300">
                 {service.title}
               </h3>
               <p className="text-[11px] text-gray-400 leading-relaxed">

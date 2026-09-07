@@ -1,4 +1,5 @@
 import React from 'react';
+import heroCore from '../../assets/images/hero-core.png';
 
 const Hero = () => {
   const clientAvatars = [
@@ -57,36 +58,36 @@ const Hero = () => {
     <section className="relative pt-8 sm:pt-10 md:pt-12 pb-12 sm:pb-14 md:pb-16 overflow-hidden">
       <div className="max-w-[1480px] mx-auto px-5 sm:px-8 md:px-10 lg:px-12 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center min-h-[70vh]">
-          {/* Left Column: Typography & CTAs */}
+          {/* Left Column: Typography & CTAs with Staggered Entrance */}
           <div className="lg:col-span-6 flex flex-col items-start gap-5 sm:gap-6">
             {/* Eyebrow Pill */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-950/40 border border-purple-500/30">
+            <div className="animate-hero-eyebrow inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-950/40 border border-purple-500/30">
               <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-purple-300">
                 Creative Digital Marketing Agency • Indore
               </span>
             </div>
 
             {/* Distinctive Punchy Headline */}
-            <h1 className="text-4xl sm:text-5xl lg:text-[56px] font-extrabold text-white tracking-tight leading-[1.12]">
+            <h1 className="animate-hero-heading text-4xl sm:text-5xl lg:text-[56px] font-extrabold text-white tracking-tight leading-[1.12]">
               WE BUILD <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-fuchsia-400 to-indigo-300">DIGITAL EXPERIENCES</span> THAT HELP BRANDS GROW.
             </h1>
 
             {/* Narrative Subtitle */}
-            <p className="text-sm sm:text-base text-gray-300/90 max-w-xl font-normal leading-relaxed">
+            <p className="animate-hero-paragraph text-sm sm:text-base text-gray-300/90 max-w-xl font-normal leading-relaxed">
               Promo Hub is a creative digital marketing agency based in Indore, helping businesses grow with strategy, creativity, and powerful content.
             </p>
 
-            {/* Action Buttons */}
-            <div className="flex flex-wrap items-center gap-4 pt-1">
+            {/* Action Buttons with Subtle Hover & Scale */}
+            <div className="animate-hero-cta flex flex-wrap items-center gap-4 pt-1">
               <a
-                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-gradient-to-r from-purple-600 via-fuchsia-600 to-indigo-600 text-white font-bold text-xs tracking-wide shadow-[0_0_30px_rgba(168,85,247,0.55)] hover:shadow-[0_0_40px_rgba(168,85,247,0.8)] hover:scale-[1.02] transition-all"
+                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-gradient-to-r from-purple-600 via-fuchsia-600 to-indigo-600 text-white font-bold text-xs tracking-wide shadow-[0_0_30px_rgba(168,85,247,0.55)] hover:shadow-[0_0_40px_rgba(168,85,247,0.8)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
                 href="#portfolio"
               >
                 <span>Explore Selected Works / Reel</span>
                 <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
               </a>
               <a
-                className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-[#151224] border border-purple-500/30 text-white font-semibold text-xs hover:border-purple-400 hover:bg-purple-950/40 transition-all"
+                className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-full bg-[#151224] border border-purple-500/30 text-white font-semibold text-xs hover:border-purple-400 hover:bg-purple-950/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
                 href="#contact"
               >
                 <span>Book Agency Discovery</span>
@@ -95,14 +96,14 @@ const Hero = () => {
             </div>
 
             {/* Trust Badge Cluster */}
-            <div className="pt-3 sm:pt-4 flex items-center gap-4">
+            <div className="animate-hero-trust pt-3 sm:pt-4 flex items-center gap-4">
               {/* Avatar Cluster */}
               <div className="flex -space-x-2.5 overflow-hidden">
                 {clientAvatars.map((avatar, idx) => (
                   <img
                     key={idx}
                     alt={avatar.alt}
-                    className="inline-block h-8 w-8 rounded-full ring-2 ring-[#08060c] object-cover"
+                    className="inline-block h-8 w-8 rounded-full ring-2 ring-[#08060c] object-cover transition-transform duration-300 hover:scale-110"
                     src={avatar.src}
                   />
                 ))}
@@ -117,7 +118,7 @@ const Hero = () => {
             </div>
           </div>
 
-          {/* Right Column: Glowing 3D Pedestal with Surrounding Badges */}
+          {/* Right Column: Glowing 3D Pedestal with Surrounding Badges — EXACT ORIGINAL */}
           <div className="lg:col-span-6 relative flex items-center justify-center">
             {/* Center Radial Purple Aura */}
             <div className="absolute w-[420px] h-[420px] bg-purple-600/30 rounded-full blur-[100px] pointer-events-none"></div>
@@ -127,7 +128,7 @@ const Hero = () => {
                 <img
                   alt="Promo Hub 3D Holographic Core"
                   className="w-full h-full object-contain filter drop-shadow-[0_0_35px_rgba(168,85,247,0.7)]"
-                  src="https://lh3.googleusercontent.com/aida/AEtjO1X0aBzhSnwt7gjVJCYZvEfxs7x_aigoky1YHAjK8VtVOtVb5c5FvUYHoX5PULHBAMk1HCjZOYXAuPl2-sDINIRWWo3zIwBYsc8p6vmBUtVrCRImvRIN86h3xi69VR47lOwZ4FU_q-88C1imyyUovQTkNZFKWOCHbSXiQaWeqQSjNL-GYzM8QpRPB56wv3KG717S_edTKZci3CIgeEKykB3_0i1mle82NIfQiJAFVTmbWhHslqME6ngZ15bA"
+                  src={heroCore}
                 />
               </div>
 
@@ -154,7 +155,7 @@ const Hero = () => {
         </div>
 
         {/* CLIENT LOGOS TICKER / TRUST BAR */}
-        <div className="mt-10 sm:mt-12 pt-6 sm:pt-8 border-t border-purple-500/15">
+        <div className="animate-hero-trust mt-10 sm:mt-12 pt-6 sm:pt-8 border-t border-purple-500/15">
           <p className="text-center text-[10px] font-bold tracking-[0.25em] text-gray-400 uppercase mb-5">
             TRUSTED BY BUSINESSES ACROSS INDUSTRIES
           </p>

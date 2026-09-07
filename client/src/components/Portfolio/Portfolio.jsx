@@ -3,6 +3,7 @@ import { useNavigate, useParams, useLocation, Link } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, EffectCoverflow, Navigation, Pagination } from 'swiper/modules';
 import API from '../../services/api';
+import useScrollReveal from '../../hooks/useScrollReveal';
 
 // Import Swiper styles
 import 'swiper/css';
@@ -290,6 +291,7 @@ const PortfolioCard = ({ project, onClick }) => {
 };
 
 const Portfolio = () => {
+  const [sectionRef, isVisible] = useScrollReveal();
   const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
@@ -393,7 +395,10 @@ const Portfolio = () => {
       className="py-8 sm:py-10 md:py-12 relative overflow-hidden"
       id="portfolio"
     >
-      <div className="max-w-[1480px] mx-auto px-5 sm:px-8 md:px-10 lg:px-12 w-full">
+      <div
+        ref={sectionRef}
+        className={`reveal-section ${isVisible ? 'is-revealed' : ''} max-w-[1480px] mx-auto px-5 sm:px-8 md:px-10 lg:px-12 w-full`}
+      >
         {/* Section Header */}
         <div className="flex items-center justify-between gap-4 mb-6 sm:mb-8">
           <div className="flex flex-col gap-1">

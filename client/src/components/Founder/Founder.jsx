@@ -1,20 +1,26 @@
 import React from 'react';
 import founderImage from "@/assets/images/founder.jpg";
+import useScrollReveal from '../../hooks/useScrollReveal';
 
 const Founder = () => {
+  const [sectionRef, isVisible] = useScrollReveal();
+
   return (
     <section className="py-8 sm:py-10 md:py-12 relative" id="founder">
       <div className="max-w-[1480px] mx-auto px-5 sm:px-8 md:px-10 lg:px-12 w-full">
-        <div className="relative rounded-3xl bg-gradient-to-r from-[#110e1c] to-[#151224] border border-purple-500/25 p-8 sm:p-12 overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.6)]">
+        <div
+          ref={sectionRef}
+          className={`reveal-section ${isVisible ? 'is-revealed' : ''} relative rounded-3xl bg-gradient-to-r from-[#110e1c] to-[#151224] border border-purple-500/25 p-8 sm:p-12 overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.6)]`}
+        >
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Left: Founder Cutout/Framed Portrait with Circular Neon Halo */}
             <div className="md:col-span-5 relative flex justify-center items-center">
               {/* Radiant Purple Ring Halo */}
-              <div className="absolute w-64 h-64 sm:w-72 sm:h-72 rounded-full border-2 border-purple-500/40 bg-purple-600/10 blur-md pointer-events-none"></div>
-              <div className="relative w-64 h-64 sm:w-72 sm:h-72 rounded-2xl overflow-hidden border border-purple-500/30 shadow-2xl">
+              <div className="absolute w-64 h-64 sm:w-72 sm:h-72 rounded-full border-2 border-purple-500/40 bg-purple-600/10 blur-md pointer-events-none animate-pulse-aura"></div>
+              <div className="relative w-64 h-64 sm:w-72 sm:h-72 rounded-2xl overflow-hidden border border-purple-500/30 shadow-2xl transition-transform duration-500 hover:scale-[1.02]">
                 <img
                   alt="Varun Soni — Founder of Promo Hub"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
                   src={founderImage}
                 />
               </div>
@@ -41,14 +47,14 @@ const Founder = () => {
               {/* Founder Contact Pills with Purple Badges */}
               <div className="flex flex-wrap items-center gap-3 pt-2">
                 <a
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#08060c] border border-purple-500/30 text-xs text-gray-300 hover:text-white hover:border-purple-400 transition-colors"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#08060c] border border-purple-500/30 text-xs text-gray-300 hover:text-white hover:border-purple-400 hover:scale-[1.02] transition-all duration-300"
                   href="tel:+919977978575"
                 >
                   <span className="material-symbols-outlined text-[16px] text-purple-400">phone</span>
                   <span>+91 99779 78575</span>
                 </a>
                 <a
-                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#08060c] border border-purple-500/30 text-xs text-gray-300 hover:text-white hover:border-purple-400 transition-colors"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#08060c] border border-purple-500/30 text-xs text-gray-300 hover:text-white hover:border-purple-400 hover:scale-[1.02] transition-all duration-300"
                   href="mailto:promo.hub9977@gmail.com"
                 >
                   <span className="material-symbols-outlined text-[16px] text-purple-400">mail</span>
