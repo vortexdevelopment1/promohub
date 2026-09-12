@@ -15,19 +15,13 @@ const multer = require('multer');
  */
 const storage = multer.memoryStorage();
 
-// File filter to ensure only valid video and image types are uploaded
+// File filter to ensure only valid video types are uploaded
 const fileFilter = (req, file, cb) => {
   if (file.fieldname === 'video') {
     if (file.mimetype.startsWith('video/')) {
       cb(null, true);
     } else {
       cb(new Error('Invalid file type. Video field only accepts video files (e.g. mp4, webm, mov).'), false);
-    }
-  } else if (file.fieldname === 'thumbnail') {
-    if (file.mimetype.startsWith('image/')) {
-      cb(null, true);
-    } else {
-      cb(new Error('Invalid file type. Thumbnail field only accepts image files (e.g. jpg, png, webp).'), false);
     }
   } else {
     cb(null, true);
@@ -42,10 +36,9 @@ const upload = multer({
   fileFilter: fileFilter,
 });
 
-// Middleware configured to accept both a 'video' file and a 'thumbnail' file simultaneously
+// Middleware configured to accept a 'video' file
 const uploadVideoFiles = upload.fields([
   { name: 'video', maxCount: 1 },
-  { name: 'thumbnail', maxCount: 1 },
 ]);
 
 module.exports = uploadVideoFiles;

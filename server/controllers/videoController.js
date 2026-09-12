@@ -54,7 +54,6 @@ const getVideos = async (req, res) => {
  */
 const createVideo = async (req, res) => {
   let videoResult = null;
-  let thumbnailResult = null;
 
   try {
     if (Video.db.readyState !== 1) {
@@ -84,12 +83,9 @@ const createVideo = async (req, res) => {
     }
 
     const videoFile = req.files && req.files.video && req.files.video[0];
-    const thumbFile = req.files && req.files.thumbnail && req.files.thumbnail[0];
 
     let videoUrl = req.body.videoUrl || '';
     let videoPublicId = '';
-    let thumbnail = req.body.thumbnail || '';
-    let thumbnailPublicId = '';
 
     // Upload video file to Cloudinary if provided
     if (videoFile) {
@@ -107,25 +103,6 @@ const createVideo = async (req, res) => {
       }
     }
 
-    // Upload thumbnail file to Cloudinary if provided
-    if (thumbFile) {
-      try {
-        thumbnailResult = await uploadStreamToCloudinary(thumbFile.buffer, 'image', 'stitch_agency/thumbnails');
-        thumbnail = thumbnailResult.secure_url;
-        thumbnailPublicId = thumbnailResult.public_id;
-      } catch (uploadError) {
-        if (videoResult && videoResult.public_id) {
-          await deleteFromCloudinary(videoResult.public_id, 'video');
-        }
-        console.error('❌ Cloudinary Thumbnail Upload Error:', uploadError);
-        return res.status(500).json({
-          success: false,
-          message: 'Failed to upload thumbnail image to Cloudinary.',
-          error: uploadError.message,
-        });
-      }
-    }
-
     if (!videoUrl) {
       return res.status(400).json({
         success: false,
@@ -133,22 +110,13 @@ const createVideo = async (req, res) => {
       });
     }
 
-    if (!thumbnail) {
-      return res.status(400).json({
-        success: false,
-        message: 'Please select a thumbnail image to upload or provide a valid thumbnail URL.',
-      });
-    }
-
-    // 5. Mongoose CREATE: Save new video document in MongoDB with Cloudinary URLs & Public IDs
+    // 3. Mongoose CREATE: Save new video document in MongoDB with Cloudinary URL & Public ID
     try {
       const newVideo = await Video.create({
         title: title.trim(),
         description: description ? description.trim() : '',
         videoUrl,
         videoPublicId,
-        thumbnail,
-        thumbnailPublicId,
         order: order !== undefined && order !== '' ? Number(order) : currentVideoCount + 1,
       });
 
@@ -160,9 +128,6 @@ const createVideo = async (req, res) => {
     } catch (dbError) {
       if (videoResult && videoResult.public_id) {
         await deleteFromCloudinary(videoResult.public_id, 'video');
-      }
-      if (thumbnailResult && thumbnailResult.public_id) {
-        await deleteFromCloudinary(thumbnailResult.public_id, 'image');
       }
       console.error('❌ Database Save Error during video creation:', dbError);
       return res.status(500).json({
@@ -188,7 +153,6 @@ const createVideo = async (req, res) => {
  */
 const updateVideo = async (req, res) => {
   let newVideoResult = null;
-  let newThumbnailResult = null;
 
   try {
     if (Video.db.readyState !== 1) {
@@ -199,7 +163,7 @@ const updateVideo = async (req, res) => {
     }
 
     const { id } = req.params;
-    const { title, description, order, videoUrl, thumbnail } = req.body;
+    const { title, description, order, videoUrl } = req.body;
 
     // 1. Mongoose READ by ID: Find existing video
     const existingVideo = await Video.findById(id);
@@ -210,9 +174,8 @@ const updateVideo = async (req, res) => {
       });
     }
 
-    // Store old public IDs for deletion after successful replacement
+    // Store old public ID for deletion after successful replacement
     const oldVideoPublicId = existingVideo.videoPublicId;
-    const oldThumbnailPublicId = existingVideo.thumbnailPublicId;
 
     // 2. Upload replacement video file if provided
     if (req.files && req.files.video && req.files.video[0]) {
@@ -233,29 +196,7 @@ const updateVideo = async (req, res) => {
       existingVideo.videoUrl = videoUrl.trim();
     }
 
-    // 3. Upload replacement thumbnail image if provided
-    if (req.files && req.files.thumbnail && req.files.thumbnail[0]) {
-      const thumbFile = req.files.thumbnail[0];
-      try {
-        newThumbnailResult = await uploadStreamToCloudinary(thumbFile.buffer, 'image', 'stitch_agency/thumbnails');
-        existingVideo.thumbnail = newThumbnailResult.secure_url;
-        existingVideo.thumbnailPublicId = newThumbnailResult.public_id;
-      } catch (uploadError) {
-        if (newVideoResult && newVideoResult.public_id) {
-          await deleteFromCloudinary(newVideoResult.public_id, 'video');
-        }
-        console.error('❌ Cloudinary Thumbnail Replacement Upload Error:', uploadError);
-        return res.status(500).json({
-          success: false,
-          message: 'Failed to upload replacement thumbnail to Cloudinary.',
-          error: uploadError.message,
-        });
-      }
-    } else if (thumbnail && thumbnail.trim()) {
-      existingVideo.thumbnail = thumbnail.trim();
-    }
-
-    // 4. Update text metadata if provided
+    // 3. Update text metadata if provided
     if (title !== undefined && title.trim()) {
       existingVideo.title = title.trim();
     }
@@ -266,16 +207,13 @@ const updateVideo = async (req, res) => {
       existingVideo.order = Number(order);
     }
 
-    // 5. Mongoose UPDATE: Save updated document
+    // 4. Mongoose UPDATE: Save updated document
     let updatedVideo;
     try {
       updatedVideo = await existingVideo.save();
     } catch (dbError) {
       if (newVideoResult && newVideoResult.public_id) {
         await deleteFromCloudinary(newVideoResult.public_id, 'video');
-      }
-      if (newThumbnailResult && newThumbnailResult.public_id) {
-        await deleteFromCloudinary(newThumbnailResult.public_id, 'image');
       }
       console.error('❌ Database Update Error:', dbError);
       return res.status(500).json({
@@ -285,12 +223,9 @@ const updateVideo = async (req, res) => {
       });
     }
 
-    // 6. Delete old Cloudinary assets AFTER successful database save
+    // 5. Delete old Cloudinary video asset AFTER successful database save
     if (newVideoResult && oldVideoPublicId) {
       await deleteFromCloudinary(oldVideoPublicId, 'video');
-    }
-    if (newThumbnailResult && oldThumbnailPublicId) {
-      await deleteFromCloudinary(oldThumbnailPublicId, 'image');
     }
 
     return res.status(200).json({
@@ -301,9 +236,6 @@ const updateVideo = async (req, res) => {
   } catch (error) {
     if (newVideoResult && newVideoResult.public_id) {
       await deleteFromCloudinary(newVideoResult.public_id, 'video');
-    }
-    if (newThumbnailResult && newThumbnailResult.public_id) {
-      await deleteFromCloudinary(newThumbnailResult.public_id, 'image');
     }
     console.error('❌ Update Video Error:', error);
     return res.status(500).json({
@@ -344,12 +276,7 @@ const deleteVideo = async (req, res) => {
       await deleteFromCloudinary(existingVideo.videoPublicId, 'video');
     }
 
-    // 3. Delete Cloudinary thumbnail asset safely using thumbnailPublicId (if present)
-    if (existingVideo.thumbnailPublicId) {
-      await deleteFromCloudinary(existingVideo.thumbnailPublicId, 'image');
-    }
-
-    // 4. Mongoose DELETE: Remove document from MongoDB
+    // 3. Mongoose DELETE: Remove document from MongoDB
     await Video.findByIdAndDelete(id);
 
     return res.status(200).json({

@@ -33,6 +33,9 @@ app.use('/api/admin', require('./routes/authRoutes'));
 // Portfolio Video CRUD Routes
 app.use('/api/videos', require('./routes/videoRoutes'));
 
+// Contact Us Enquiries Routes
+app.use('/api/contact', require('./routes/contactRoutes'));
+
 // Root Health Check Route
 app.get('/', (req, res) => {
   res.status(200).json({

@@ -9,7 +9,7 @@ import videoService from '../services/videoService';
  * Main Content:
  * - Top Action: + Add Video
  * - Video Table:
- *   - Thumbnail
+ *   - Video Preview
  *   - Title
  *   - Description
  *   - Order
@@ -32,11 +32,9 @@ const Videos = () => {
     description: '',
     order: 0,
     videoUrl: '',
-    thumbnail: '',
   });
 
   const [videoFile, setVideoFile] = useState(null);
-  const [thumbnailFile, setThumbnailFile] = useState(null);
 
   // UI States
   const [formSubmitting, setFormSubmitting] = useState(false);
@@ -52,10 +50,8 @@ const Videos = () => {
       description: '',
       order: videoCount + 1,
       videoUrl: '',
-      thumbnail: '',
     });
     setVideoFile(null);
-    setThumbnailFile(null);
     setFormError('');
     setIsAddModalOpen(true);
   };
@@ -79,11 +75,6 @@ const Videos = () => {
       return;
     }
 
-    if (!thumbnailFile && !formData.thumbnail.trim()) {
-      setFormError('Please select a thumbnail image to upload or provide an image URL.');
-      return;
-    }
-
     try {
       setFormSubmitting(true);
 
@@ -96,12 +87,6 @@ const Videos = () => {
         data.append('video', videoFile);
       } else if (formData.videoUrl) {
         data.append('videoUrl', formData.videoUrl.trim());
-      }
-
-      if (thumbnailFile) {
-        data.append('thumbnail', thumbnailFile);
-      } else if (formData.thumbnail) {
-        data.append('thumbnail', formData.thumbnail.trim());
       }
 
       await videoService.createVideo(data);
@@ -128,10 +113,8 @@ const Videos = () => {
       description: video.description || '',
       order: video.order ?? 0,
       videoUrl: video.videoUrl || '',
-      thumbnail: video.thumbnail || '',
     });
     setVideoFile(null);
-    setThumbnailFile(null);
     setFormError('');
     setIsEditModalOpen(true);
   };
@@ -158,12 +141,6 @@ const Videos = () => {
         data.append('video', videoFile);
       } else if (formData.videoUrl) {
         data.append('videoUrl', formData.videoUrl.trim());
-      }
-
-      if (thumbnailFile) {
-        data.append('thumbnail', thumbnailFile);
-      } else if (formData.thumbnail) {
-        data.append('thumbnail', formData.thumbnail.trim());
       }
 
       await videoService.updateVideo(activeVideo._id, data);
@@ -302,7 +279,7 @@ const Videos = () => {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-purple-500/20 bg-[#161226]/90 text-[11px] font-bold uppercase tracking-wider text-purple-400">
-                  <th className="py-4 px-6 w-36">Thumbnail</th>
+                  <th className="py-4 px-6 w-36">Video Preview</th>
                   <th className="py-4 px-6 min-w-[200px]">Title</th>
                   <th className="py-4 px-6 min-w-[280px]">Description</th>
                   <th className="py-4 px-6 text-center w-28">Order</th>
@@ -315,19 +292,22 @@ const Videos = () => {
                     key={video._id}
                     className="hover:bg-[#161228]/60 transition-colors group"
                   >
-                    {/* Thumbnail */}
+                    {/* Video Preview */}
                     <td className="py-4 px-6 w-36">
-                      <div className="relative w-28 h-18 rounded-xl overflow-hidden bg-black border border-purple-500/30 shadow-md aspect-video">
-                        <img
-                          src={video.thumbnail}
-                          alt={video.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      <div className="relative w-28 h-18 rounded-xl overflow-hidden bg-black border border-purple-500/30 shadow-md aspect-video flex items-center justify-center">
+                        <video
+                          src={video.videoUrl}
+                          muted
+                          playsInline
+                          loop
+                          preload="metadata"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 pointer-events-none"
                         />
                         <a
                           href={video.videoUrl}
                           target="_blank"
                           rel="noreferrer"
-                          className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-[1px]"
+                          className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-[1px]"
                           title="Preview Video in New Tab"
                         >
                           <span className="material-symbols-outlined text-white text-2xl">play_circle</span>
@@ -392,7 +372,7 @@ const Videos = () => {
       {/* ========================================================= */}
       {isAddModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
-          <div className="relative w-full max-w-3xl lg:max-w-[820px] rounded-3xl bg-[#120e20] border border-purple-500/30 p-6 sm:p-8 md:p-9 shadow-[0_25px_70px_rgba(0,0,0,0.95),0_0_40px_rgba(168,85,247,0.15)] my-auto max-h-[92vh] overflow-y-auto">
+          <div className="relative w-full max-w-2xl rounded-3xl bg-[#120e20] border border-purple-500/30 p-6 sm:p-8 shadow-[0_25px_70px_rgba(0,0,0,0.95),0_0_40px_rgba(168,85,247,0.15)] my-auto max-h-[92vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-4 border-b border-purple-500/20 mb-6">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-purple-950/60 border border-purple-500/40 flex items-center justify-center text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.3)]">
@@ -400,7 +380,7 @@ const Videos = () => {
                 </div>
                 <div>
                   <h3 className="text-lg sm:text-xl font-extrabold text-white">Add New Video Reel</h3>
-                  <p className="text-xs text-gray-400">Upload video &amp; thumbnail directly to Cloudinary</p>
+                  <p className="text-xs text-gray-400">Upload video directly to Cloudinary &amp; MongoDB</p>
                 </div>
               </div>
               <button
@@ -447,40 +427,21 @@ const Videos = () => {
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                {/* Video File Upload */}
-                <div className="p-4 rounded-2xl bg-[#08060c]/80 border border-purple-500/20 flex flex-col justify-between gap-2">
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-purple-300 mb-1">
-                      Video File *
-                    </label>
-                    <span className="text-[11px] text-gray-400 block mb-2">Accepts MP4, WebM, MOV (Max 100MB)</span>
-                  </div>
-                  <input
-                    type="file"
-                    accept="video/*"
-                    required
-                    onChange={(e) => setVideoFile(e.target.files[0] || null)}
-                    className="w-full text-xs text-gray-300 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700 cursor-pointer bg-[#120e20] p-1.5 rounded-xl border border-purple-500/30"
-                  />
+              {/* Video File Upload */}
+              <div className="p-4 rounded-2xl bg-[#08060c]/80 border border-purple-500/20 flex flex-col justify-between gap-2">
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-purple-300 mb-1">
+                    Video File *
+                  </label>
+                  <span className="text-[11px] text-gray-400 block mb-2">Accepts MP4, WebM, MOV (Max 100MB)</span>
                 </div>
-
-                {/* Thumbnail Image Upload */}
-                <div className="p-4 rounded-2xl bg-[#08060c]/80 border border-purple-500/20 flex flex-col justify-between gap-2">
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-purple-300 mb-1">
-                      Thumbnail Poster *
-                    </label>
-                    <span className="text-[11px] text-gray-400 block mb-2">Accepts JPG, PNG, WebP (Poster preview)</span>
-                  </div>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    required
-                    onChange={(e) => setThumbnailFile(e.target.files[0] || null)}
-                    className="w-full text-xs text-gray-300 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700 cursor-pointer bg-[#120e20] p-1.5 rounded-xl border border-purple-500/30"
-                  />
-                </div>
+                <input
+                  type="file"
+                  accept="video/*"
+                  required
+                  onChange={(e) => setVideoFile(e.target.files[0] || null)}
+                  className="w-full text-xs text-gray-300 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700 cursor-pointer bg-[#120e20] p-1.5 rounded-xl border border-purple-500/30"
+                />
               </div>
 
               <div className="w-full sm:w-1/3">
@@ -514,7 +475,7 @@ const Videos = () => {
                   {formSubmitting ? (
                     <>
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      <span>Uploading to Cloudinary...</span>
+                      <span>Uploading Video...</span>
                     </>
                   ) : (
                     <span>Save Video</span>
@@ -531,7 +492,7 @@ const Videos = () => {
       {/* ========================================================= */}
       {isEditModalOpen && activeVideo && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
-          <div className="relative w-full max-w-3xl lg:max-w-[820px] rounded-3xl bg-[#120e20] border border-purple-500/30 p-6 sm:p-8 md:p-9 shadow-[0_25px_70px_rgba(0,0,0,0.95),0_0_40px_rgba(168,85,247,0.15)] my-auto max-h-[92vh] overflow-y-auto">
+          <div className="relative w-full max-w-2xl rounded-3xl bg-[#120e20] border border-purple-500/30 p-6 sm:p-8 shadow-[0_25px_70px_rgba(0,0,0,0.95),0_0_40px_rgba(168,85,247,0.15)] my-auto max-h-[92vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-4 border-b border-purple-500/20 mb-6">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-purple-950/60 border border-purple-500/40 flex items-center justify-center text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.3)]">
@@ -539,7 +500,7 @@ const Videos = () => {
                 </div>
                 <div>
                   <h3 className="text-lg sm:text-xl font-extrabold text-white">Edit Video Reel</h3>
-                  <p className="text-xs text-gray-400">Update metadata or replace video/thumbnail</p>
+                  <p className="text-xs text-gray-400">Update metadata or replace video file</p>
                 </div>
               </div>
               <button
@@ -587,42 +548,22 @@ const Videos = () => {
                 />
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                {/* Video Replacement */}
-                <div className="p-4 rounded-2xl bg-[#08060c]/80 border border-purple-500/20 flex flex-col justify-between gap-2">
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-purple-300 mb-1">
-                      Replace Video (Optional)
-                    </label>
-                    <span className="text-[10px] text-gray-400 block mb-2 truncate" title={formData.videoUrl}>
-                      Current: {formData.videoUrl}
-                    </span>
-                  </div>
-                  <input
-                    type="file"
-                    accept="video/*"
-                    onChange={(e) => setVideoFile(e.target.files[0] || null)}
-                    className="w-full text-xs text-gray-300 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700 cursor-pointer bg-[#120e20] p-1.5 rounded-xl border border-purple-500/30"
-                  />
+              {/* Video Replacement */}
+              <div className="p-4 rounded-2xl bg-[#08060c]/80 border border-purple-500/20 flex flex-col justify-between gap-2">
+                <div>
+                  <label className="block text-xs font-bold uppercase tracking-wider text-purple-300 mb-1">
+                    Replace Video (Optional)
+                  </label>
+                  <span className="text-[10px] text-gray-400 block mb-2 truncate" title={formData.videoUrl}>
+                    Current: {formData.videoUrl}
+                  </span>
                 </div>
-
-                {/* Thumbnail Replacement */}
-                <div className="p-4 rounded-2xl bg-[#08060c]/80 border border-purple-500/20 flex flex-col justify-between gap-2">
-                  <div>
-                    <label className="block text-xs font-bold uppercase tracking-wider text-purple-300 mb-1">
-                      Replace Thumbnail (Optional)
-                    </label>
-                    <span className="text-[10px] text-gray-400 block mb-2 truncate" title={formData.thumbnail}>
-                      Current: {formData.thumbnail}
-                    </span>
-                  </div>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => setThumbnailFile(e.target.files[0] || null)}
-                    className="w-full text-xs text-gray-300 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700 cursor-pointer bg-[#120e20] p-1.5 rounded-xl border border-purple-500/30"
-                  />
-                </div>
+                <input
+                  type="file"
+                  accept="video/*"
+                  onChange={(e) => setVideoFile(e.target.files[0] || null)}
+                  className="w-full text-xs text-gray-300 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700 cursor-pointer bg-[#120e20] p-1.5 rounded-xl border border-purple-500/30"
+                />
               </div>
 
               <div className="w-full sm:w-1/3">

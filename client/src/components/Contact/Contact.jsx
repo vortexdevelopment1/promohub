@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import useScrollReveal from '../../hooks/useScrollReveal';
+import contactService from '../../services/contactService';
 
 const Contact = () => {
   const [sectionRef, isVisible] = useScrollReveal();
@@ -10,26 +11,60 @@ const Contact = () => {
     service: '',
     message: '',
   });
-  const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [statusMessage, setStatusMessage] = useState({ type: '', text: '' });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
-    alert(
-      'Inquiry received. Promo Hub will review your submission and get back to you shortly.'
-    );
-    setFormData({
-      name: '',
-      email: '',
-      phone: '',
-      service: '',
-      message: '',
-    });
+    setStatusMessage({ type: '', text: '' });
+
+    // Basic validation
+    if (!formData.name.trim() || !formData.email.trim() || !formData.phone.trim() || !formData.message.trim()) {
+      setStatusMessage({
+        type: 'error',
+        text: 'Please fill in all required fields.',
+      });
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      const response = await contactService.submitContact({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        subject: formData.service || 'Website Project Enquiry',
+        service: formData.service,
+        message: formData.message,
+      });
+
+      setStatusMessage({
+        type: 'success',
+        text: response.message || 'Thank you! Your enquiry has been received. We will get back to you shortly.',
+      });
+
+      // Clear form on success
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        service: '',
+        message: '',
+      });
+    } catch (err) {
+      console.error('Contact submission error:', err);
+      setStatusMessage({
+        type: 'error',
+        text: err.response?.data?.message || err.message || 'Unable to send message right now. Please try again or reach us directly.',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const socialLinks = [
@@ -80,11 +115,11 @@ const Contact = () => {
                   <span>+91 99779 78575</span>
                 </a>
                 <a
-                  href="mailto:promo.hub9977@gmail.com"
+                  href="mailto:QubecloudHub@gmail.com"
                   className="flex items-center gap-3 text-xs text-gray-300 hover:text-white hover:translate-x-1 transition-all duration-300"
                 >
                   <span className="material-symbols-outlined text-purple-400 text-[18px]">mail</span>
-                  <span>promo.hub9977@gmail.com</span>
+                  <span>QubecloudHub@gmail.com</span>
                 </a>
                 <div className="flex items-center gap-3 text-xs text-gray-300">
                   <span className="material-symbols-outlined text-purple-400 text-[18px]">location_on</span>
@@ -111,6 +146,21 @@ const Contact = () => {
 
             {/* Right Interactive Form Block */}
             <div className="lg:col-span-8">
+              {/* Submission Feedback Alert */}
+              {statusMessage.text && (
+                <div
+                  className={`mb-4 p-4 rounded-xl text-xs flex items-center gap-2.5 animate-fadeIn ${statusMessage.type === 'success'
+                      ? 'bg-emerald-950/70 border border-emerald-500/40 text-emerald-300'
+                      : 'bg-red-950/70 border border-red-500/40 text-red-300'
+                    }`}
+                >
+                  <span className="material-symbols-outlined text-[18px]">
+                    {statusMessage.type === 'success' ? 'check_circle' : 'error'}
+                  </span>
+                  <span>{statusMessage.text}</span>
+                </div>
+              )}
+
               <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <input
@@ -148,7 +198,6 @@ const Contact = () => {
                     onChange={handleChange}
                     className="w-full px-4 py-3 rounded-xl bg-[#08060c] border border-purple-500/20 text-white placeholder-gray-500 text-xs focus:outline-none focus:border-purple-400 focus:ring-1 focus:ring-purple-400/30 transition-all duration-300"
                     placeholder="Service Required"
-                    required
                     type="text"
                   />
                 </div>
@@ -164,11 +213,21 @@ const Contact = () => {
                   ></textarea>
                 </div>
                 <button
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-purple-600 via-fuchsia-600 to-indigo-600 text-white text-xs font-bold tracking-wide shadow-[0_0_25px_rgba(168,85,247,0.5)] hover:shadow-[0_0_35px_rgba(168,85,247,0.8)] hover:scale-[1.01] active:scale-[0.99] transition-all duration-300 cursor-pointer"
+                  disabled={isSubmitting}
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-purple-600 via-fuchsia-600 to-indigo-600 text-white text-xs font-bold tracking-wide shadow-[0_0_25px_rgba(168,85,247,0.5)] hover:shadow-[0_0_35px_rgba(168,85,247,0.8)] hover:scale-[1.01] active:scale-[0.99] transition-all duration-300 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                   type="submit"
                 >
-                  <span>Send Message</span>
-                  <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                  {isSubmitting ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>Sending Message...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Send Message</span>
+                      <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                    </>
+                  )}
                 </button>
               </form>
             </div>

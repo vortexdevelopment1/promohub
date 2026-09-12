@@ -12,6 +12,7 @@ import logoImg from '../assets/images/logo.png';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -98,17 +99,28 @@ const Login = () => {
               Password
             </label>
             <div className="relative flex items-center">
-              <span className="material-symbols-outlined absolute left-3.5 text-gray-400 text-[18px]">
+              <span className="material-symbols-outlined absolute left-3.5 text-gray-400 text-[18px] pointer-events-none">
                 key
               </span>
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#08060c] border border-purple-500/25 text-white text-xs placeholder:text-gray-600 focus:outline-none focus:border-purple-400 focus:ring-1 focus:ring-purple-400 transition-colors"
+                className="w-full pl-10 pr-11 py-3 rounded-xl bg-[#08060c] border border-purple-500/25 text-white text-xs placeholder:text-gray-600 focus:outline-none focus:border-purple-400 focus:ring-1 focus:ring-purple-400 transition-colors"
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                tabIndex={-1}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                className="absolute right-3 text-gray-400 hover:text-purple-300 hover:bg-purple-500/10 active:scale-95 transition-all p-1.5 rounded-lg flex items-center justify-center focus:outline-none focus:text-purple-300"
+              >
+                <span className="material-symbols-outlined text-[18px]">
+                  {showPassword ? 'visibility_off' : 'visibility'}
+                </span>
+              </button>
             </div>
           </div>
 

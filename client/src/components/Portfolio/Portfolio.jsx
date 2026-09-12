@@ -176,7 +176,6 @@ const ReelModal = ({ projectsList, initialIndex, onClose, onNavigate }) => {
           ref={videoRef}
           key={currentProject.id}
           src={currentProject.video}
-          poster={currentProject.image}
           autoPlay
           playsInline
           muted={isMuted}
@@ -225,14 +224,99 @@ const ReelModal = ({ projectsList, initialIndex, onClose, onNavigate }) => {
   );
 };
 
-// Individual Portfolio Card with independent loading and error state
-const PortfolioCard = ({ project, onClick }) => {
+// Individual Portfolio Card with independent loading, center autoplay, and hover autoplay
+const PortfolioCard = ({
+  project,
+  isActive,
+  activeHoveredId,
+  onHoverStart,
+  onHoverEnd,
+  onClick,
+  isModalOpen,
+}) => {
   const [mediaStatus, setMediaStatus] = useState('loading'); // 'loading' | 'loaded' | 'error'
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const videoRef = useRef(null);
+
+  // Play condition:
+  // 1. Modal must not be open.
+  // 2. If any card is hovered: only the hovered card plays.
+  // 3. If no card is hovered: the active (center) slide plays.
+  const isThisCardHovered =
+    isHovered || (activeHoveredId !== null && String(activeHoveredId) === String(project.id));
+  const shouldPlay =
+    !isModalOpen &&
+    (activeHoveredId !== null ? isThisCardHovered : !!isActive);
+
+  // Synchronize HTML5 video playback with shouldPlay state
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (shouldPlay) {
+      video.muted = true;
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            setIsPlaying(true);
+          })
+          .catch(() => {
+            // Autoplay rejected or aborted by browser; handle silently
+            setIsPlaying(false);
+          });
+      }
+    } else {
+      video.pause();
+      setIsPlaying(false);
+      // Reset video to start when inactive / unhovered
+      if (!isActive) {
+        try {
+          video.currentTime = 0;
+        } catch (_) {}
+      }
+    }
+  }, [shouldPlay, isActive]);
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    if (onHoverStart) {
+      onHoverStart(project.id);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    if (onHoverEnd) {
+      onHoverEnd(project.id);
+    }
+  };
+
+  const handleCanPlay = () => {
+    setMediaStatus('loaded');
+    const video = videoRef.current;
+    if (video && shouldPlay) {
+      video.muted = true;
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => setIsPlaying(true))
+          .catch(() => setIsPlaying(false));
+      }
+    }
+  };
 
   return (
     <div
       onClick={onClick}
-      className="group relative w-full aspect-[4/3] rounded-2xl sm:rounded-3xl overflow-hidden border border-purple-500/30 bg-[#110e1c] shadow-[0_12px_35px_rgba(0,0,0,0.8),0_0_20px_rgba(168,85,247,0.2)] hover:border-purple-400/60 hover:shadow-[0_15px_45px_rgba(0,0,0,0.9),0_0_30px_rgba(168,85,247,0.35)] transition-all duration-300 cursor-pointer select-none"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      className={`group relative w-full aspect-[4/3] rounded-2xl sm:rounded-3xl overflow-hidden border bg-[#110e1c] cursor-pointer select-none transition-all duration-300 ease-out transform-gpu ${
+        isActive
+          ? 'border-purple-500/50 shadow-[0_12px_35px_rgba(0,0,0,0.85),0_0_25px_rgba(168,85,247,0.25)]'
+          : 'border-purple-500/30 shadow-[0_10px_30px_rgba(0,0,0,0.8),0_0_15px_rgba(168,85,247,0.15)]'
+      } hover:scale-[1.03] hover:border-purple-400/80 hover:shadow-[0_16px_45px_rgba(0,0,0,0.95),0_0_30px_rgba(168,85,247,0.35)]`}
     >
       {/* Loading State Placeholder */}
       {mediaStatus === 'loading' && (
@@ -254,24 +338,47 @@ const PortfolioCard = ({ project, onClick }) => {
         </div>
       )}
 
-      {/* Clean Poster Thumbnail Image */}
-      <img
-        alt={project.alt || project.title}
-        className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-105 pointer-events-none ${
-          mediaStatus === 'loaded' ? 'opacity-100' : 'opacity-0'
-        }`}
-        src={project.image}
-        loading="lazy"
-        onLoad={() => setMediaStatus('loaded')}
-        onError={() => setMediaStatus('error')}
-      />
+      {/* Video element when video URL exists */}
+      {project.video ? (
+        <video
+          ref={videoRef}
+          src={project.video}
+          muted
+          playsInline
+          loop
+          preload="metadata"
+          onLoadedData={() => setMediaStatus('loaded')}
+          onCanPlay={handleCanPlay}
+          onPlaying={() => {
+            setMediaStatus('loaded');
+            setIsPlaying(true);
+          }}
+          onPause={() => setIsPlaying(false)}
+          onError={() => setMediaStatus('error')}
+          className={`w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105 pointer-events-none ${
+            mediaStatus === 'loaded' ? 'opacity-100' : 'opacity-0'
+          }`}
+        />
+      ) : (
+        /* Video unavailable fallback */
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#110e1c] p-4 text-center z-10 pointer-events-none">
+          <span className="material-symbols-outlined text-2xl text-purple-400/60 mb-1">
+            videocam_off
+          </span>
+          <span className="text-xs text-gray-400">Video source unavailable</span>
+        </div>
+      )}
 
       {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 pointer-events-none" />
 
-      {/* Center Play Button Overlay */}
+      {/* Center Play Button Overlay (Visible when paused, smoothly fades out when playing) */}
       {mediaStatus === 'loaded' && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div
+          className={`absolute inset-0 flex items-center justify-center pointer-events-none transition-opacity duration-300 ${
+            isPlaying ? 'opacity-0' : 'opacity-100'
+          }`}
+        >
           <div className="w-11 h-11 rounded-full bg-purple-600/90 border border-purple-400/50 text-white flex items-center justify-center shadow-[0_0_20px_rgba(168,85,247,0.8)] group-hover:scale-110 transition-all duration-300">
             <span className="material-symbols-outlined text-[22px] ml-0.5 material-symbols-fill">
               play_arrow
@@ -301,6 +408,15 @@ const Portfolio = () => {
   // Projects list state populated strictly from backend MongoDB via Admin upload API
   const [projectsList, setProjectsList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeHoveredId, setActiveHoveredId] = useState(null);
+
+  const handleHoverStart = useCallback((id) => {
+    setActiveHoveredId(id);
+  }, []);
+
+  const handleHoverEnd = useCallback((id) => {
+    setActiveHoveredId((current) => (current === id ? null : current));
+  }, []);
 
   // Fetch videos dynamically from backend API (MongoDB via GET /api/videos)
   useEffect(() => {
@@ -322,7 +438,6 @@ const Portfolio = () => {
             category: 'Video Reel',
             deliverables: video.description || 'Deliverables: Short-Form Viral Lab & Motion Content',
             description: video.description || video.title || '',
-            image: video.thumbnail,
             video: video.videoUrl,
             alt: video.title || 'Portfolio Reel',
             order: video.order !== undefined ? video.order : idx + 1,
@@ -509,7 +624,10 @@ const Portfolio = () => {
         </div>
 
         {/* Swiper.js Infinite Autoplay Carousel or Empty/Loading State */}
-        <div className="relative w-full py-2">
+        <div
+          className="relative w-full py-2"
+          onMouseLeave={() => setActiveHoveredId(null)}
+        >
           {loading ? (
             <div className="flex flex-col items-center justify-center py-16 px-4 text-center border border-purple-500/20 rounded-2xl sm:rounded-3xl bg-[#110e1c]/40 my-4">
               <div className="w-10 h-10 rounded-full border-2 border-purple-500/20 border-t-purple-400 animate-spin mb-3" />
@@ -566,10 +684,17 @@ const Portfolio = () => {
             >
               {projectsList.map((project, idx) => (
                 <SwiperSlide key={project.id} className="!h-auto flex items-center justify-center cursor-pointer">
-                  <PortfolioCard
-                    project={project}
-                    onClick={() => handleCardClick(project, idx)}
-                  />
+                  {({ isActive }) => (
+                    <PortfolioCard
+                      project={project}
+                      isActive={isActive}
+                      activeHoveredId={activeHoveredId}
+                      onHoverStart={handleHoverStart}
+                      onHoverEnd={handleHoverEnd}
+                      onClick={() => handleCardClick(project, idx)}
+                      isModalOpen={activeModalIndex !== null}
+                    />
+                  )}
                 </SwiperSlide>
               ))}
             </Swiper>

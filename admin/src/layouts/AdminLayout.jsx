@@ -70,7 +70,7 @@ const AdminLayout = () => {
             />
           </div>
 
-          {/* Navigation Links: Videos */}
+          {/* Navigation Links: Videos & Contact Enquiries */}
           <nav className="flex flex-col gap-2">
             <span className="text-[10px] font-bold uppercase tracking-widest text-purple-400/80 px-3 mb-1">
               Menu
@@ -88,6 +88,21 @@ const AdminLayout = () => {
             >
               <span className="material-symbols-outlined text-[20px]">movie</span>
               <span>Videos</span>
+            </NavLink>
+
+            <NavLink
+              to="/admin/contact-enquiries"
+              onClick={() => setMobileMenuOpen(false)}
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-semibold tracking-wide transition-all ${
+                  isActive
+                    ? 'bg-purple-600/20 text-purple-300 border border-purple-500/40 shadow-[0_0_15px_rgba(168,85,247,0.2)]'
+                    : 'text-gray-400 hover:text-white hover:bg-[#151124] border border-transparent'
+                }`
+              }
+            >
+              <span className="material-symbols-outlined text-[20px]">mail</span>
+              <span>Contact Enquiries</span>
             </NavLink>
           </nav>
         </div>
@@ -121,7 +136,7 @@ const AdminLayout = () => {
           {/* Admin Email */}
           <div className="px-3 pt-2">
             <span className="text-[10px] text-gray-500 truncate block">
-              Logged in: {admin?.email || 'admin@example.com'}
+              Logged in: {admin?.email || 'Admin'}
             </span>
           </div>
         </div>

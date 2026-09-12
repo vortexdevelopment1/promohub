@@ -25,8 +25,15 @@ const adminLogin = async (req, res) => {
       });
     }
 
-    const envAdminEmail = process.env.ADMIN_EMAIL || 'admin@example.com';
-    const envAdminPassword = process.env.ADMIN_PASSWORD || '123456';
+    const envAdminEmail = process.env.ADMIN_EMAIL;
+    const envAdminPassword = process.env.ADMIN_PASSWORD;
+
+    if (!envAdminEmail || !envAdminPassword) {
+      return res.status(500).json({
+        success: false,
+        message: 'Server configuration error: Admin credentials not configured in environment.',
+      });
+    }
 
     // Verify credentials
     if (email.trim().toLowerCase() !== envAdminEmail.trim().toLowerCase() || password !== envAdminPassword) {

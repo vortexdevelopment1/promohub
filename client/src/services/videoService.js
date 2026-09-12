@@ -19,7 +19,7 @@ export const videoService = {
 
   /**
    * Upload & create a new video with FormData (Admin Protected)
-   * @param {FormData} formData - Contains title, description, order, video file, thumbnail file
+   * @param {FormData} formData - Contains title, description, order, video file
    */
   createVideo: async (formData) => {
     const response = await API.post('/videos', formData, {
