@@ -2,8 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, EffectCoverflow, Navigation, Pagination } from 'swiper/modules';
-import API from '../../services/api';
-import { projects as fallbackProjects } from '../../data/projects';
+import videoService from '../../services/videoService';
 import useScrollReveal from '../../hooks/useScrollReveal';
 
 // Import Swiper styles
@@ -299,43 +298,42 @@ const Portfolio = () => {
   const swiperRef = useRef(null);
   const lastClickTimeRef = useRef(0);
 
-  // Projects list state initialized with fallback data
-  const [projectsList, setProjectsList] = useState(fallbackProjects || []);
-  const [loading, setLoading] = useState(false);
+  // Projects list state populated strictly from backend MongoDB via Admin upload API
+  const [projectsList, setProjectsList] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   // Fetch videos dynamically from backend API (MongoDB via GET /api/videos)
   useEffect(() => {
     const fetchPortfolioVideos = async () => {
       try {
         setLoading(true);
-        const response = await API.get('/videos');
+        const responseData = await videoService.getVideos();
 
-        const videos =
-          response.data && Array.isArray(response.data.data)
-            ? response.data.data
-            : Array.isArray(response.data)
-            ? response.data
-            : [];
+        const videos = Array.isArray(responseData?.data)
+          ? responseData.data
+          : Array.isArray(responseData)
+          ? responseData
+          : [];
 
         if (videos.length > 0) {
-          const apiProjects = videos.map((video, idx) => ({
+          const liveProjects = videos.map((video, idx) => ({
             id: video._id || idx + 1,
-            title: video.title,
+            title: video.title || 'Untitled Project',
             category: 'Video Reel',
             deliverables: video.description || 'Deliverables: Short-Form Viral Lab & Motion Content',
-            description: video.description || video.title,
+            description: video.description || video.title || '',
             image: video.thumbnail,
             video: video.videoUrl,
-            alt: video.title,
+            alt: video.title || 'Portfolio Reel',
             order: video.order !== undefined ? video.order : idx + 1,
           }));
-          setProjectsList(apiProjects);
+          setProjectsList(liveProjects);
         } else {
-          setProjectsList(fallbackProjects);
+          setProjectsList([]);
         }
       } catch (err) {
-        console.warn('Portfolio video fetch failed, using fallback projects:', err);
-        setProjectsList(fallbackProjects);
+        console.error('Portfolio video fetch failed from backend:', err);
+        setProjectsList([]);
       } finally {
         setLoading(false);
       }
@@ -477,40 +475,49 @@ const Portfolio = () => {
             </p>
           </div>
 
-          {/* Header Controls: Prev/Next Buttons & CTA */}
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1 bg-[#110e1c] p-1 rounded-full border border-purple-500/25 shadow-inner">
-              <button
-                type="button"
-                onClick={() => swiperRef.current?.slidePrev()}
-                className="w-7 h-7 rounded-full flex items-center justify-center text-gray-300 hover:text-white hover:bg-purple-900/40 transition-colors cursor-pointer"
-                aria-label="Previous Project"
-              >
-                <span className="material-symbols-outlined text-[16px]">chevron_left</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => swiperRef.current?.slideNext()}
-                className="w-7 h-7 rounded-full flex items-center justify-center text-gray-300 hover:text-white hover:bg-purple-900/40 transition-colors cursor-pointer"
-                aria-label="Next Project"
-              >
-                <span className="material-symbols-outlined text-[16px]">chevron_right</span>
-              </button>
-            </div>
+          {/* Header Controls: Prev/Next Buttons & CTA (shown when projects exist) */}
+          {projectsList.length > 0 && (
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1 bg-[#110e1c] p-1 rounded-full border border-purple-500/25 shadow-inner">
+                <button
+                  type="button"
+                  onClick={() => swiperRef.current?.slidePrev()}
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-gray-300 hover:text-white hover:bg-purple-900/40 transition-colors cursor-pointer"
+                  aria-label="Previous Project"
+                >
+                  <span className="material-symbols-outlined text-[16px]">chevron_left</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => swiperRef.current?.slideNext()}
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-gray-300 hover:text-white hover:bg-purple-900/40 transition-colors cursor-pointer"
+                  aria-label="Next Project"
+                >
+                  <span className="material-symbols-outlined text-[16px]">chevron_right</span>
+                </button>
+              </div>
 
-            <a
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-purple-500/30 text-xs font-semibold text-gray-300 hover:text-white hover:border-purple-400 transition-colors"
-              href="#contact"
-            >
-              <span>View All</span>
-              <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
-            </a>
-          </div>
+              <a
+                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-purple-500/30 text-xs font-semibold text-gray-300 hover:text-white hover:border-purple-400 transition-colors"
+                href="#contact"
+              >
+                <span>View All</span>
+                <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+              </a>
+            </div>
+          )}
         </div>
 
-        {/* Swiper.js Infinite Autoplay Carousel */}
+        {/* Swiper.js Infinite Autoplay Carousel or Empty/Loading State */}
         <div className="relative w-full py-2">
-          {projectsList.length > 0 ? (
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-16 px-4 text-center border border-purple-500/20 rounded-2xl sm:rounded-3xl bg-[#110e1c]/40 my-4">
+              <div className="w-10 h-10 rounded-full border-2 border-purple-500/20 border-t-purple-400 animate-spin mb-3" />
+              <span className="text-xs font-medium text-purple-300 tracking-wide animate-pulse">
+                Loading Portfolio Projects...
+              </span>
+            </div>
+          ) : projectsList.length > 0 ? (
             <Swiper
               key={`portfolio-swiper-${projectsList.length}`}
               onBeforeInit={(swiper) => {
@@ -523,7 +530,7 @@ const Portfolio = () => {
               slideToClickedSlide={true}
               onClick={handleSwiperClick}
               loop={projectsList.length > 2}
-              loopAdditionalSlides={2}
+              loopAdditionalSlides={projectsList.length > 2 ? 2 : 0}
               speed={600}
               autoplay={{
                 delay: 1800,
@@ -543,11 +550,11 @@ const Portfolio = () => {
                   spaceBetween: 16,
                 },
                 640: {
-                  slidesPerView: 2,
+                  slidesPerView: Math.min(projectsList.length, 2),
                   spaceBetween: 20,
                 },
                 1024: {
-                  slidesPerView: 3,
+                  slidesPerView: Math.min(projectsList.length, 3),
                   spaceBetween: 28,
                 },
               }}
@@ -566,12 +573,18 @@ const Portfolio = () => {
                 </SwiperSlide>
               ))}
             </Swiper>
-          ) : !loading ? (
-            <div className="flex flex-col items-center justify-center py-16 text-center border border-purple-500/20 rounded-2xl bg-[#110e1c]/50 my-4">
-              <span className="material-symbols-outlined text-4xl text-purple-400 mb-2">video_library</span>
-              <p className="text-sm font-medium text-gray-400">No portfolio videos available yet.</p>
+          ) : (
+            /* Clean Empty State when no videos uploaded by Admin yet */
+            <div className="flex flex-col items-center justify-center py-16 px-4 text-center border border-purple-500/20 rounded-2xl sm:rounded-3xl bg-[#110e1c]/50 my-4 backdrop-blur-sm shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+              <div className="w-14 h-14 rounded-full bg-purple-950/60 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-3 shadow-[0_0_20px_rgba(168,85,247,0.2)]">
+                <span className="material-symbols-outlined text-3xl">video_library</span>
+              </div>
+              <h3 className="text-base sm:text-lg font-bold text-white mb-1">No Portfolio Videos Uploaded Yet</h3>
+              <p className="text-xs sm:text-sm text-gray-400 max-w-md">
+                Videos uploaded through the admin portal will automatically appear here.
+              </p>
             </div>
-          ) : null}
+          )}
         </div>
       </div>
 

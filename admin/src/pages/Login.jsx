@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import logoImg from '../assets/images/logo.png';
 
 /**
  * ==========================================================
@@ -50,13 +51,15 @@ const Login = () => {
       <div className="relative z-10 w-full max-w-md rounded-3xl bg-gradient-to-b from-[#141024] to-[#0f0c1b] border border-purple-500/30 p-8 sm:p-10 shadow-[0_20px_60px_rgba(0,0,0,0.8),0_0_40px_rgba(168,85,247,0.15)]">
         {/* Header */}
         <div className="flex flex-col items-center text-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-purple-950/60 p-2.5 flex items-center justify-center border border-purple-500/40 shadow-[0_0_25px_rgba(168,85,247,0.4)] mb-4">
-            <span className="material-symbols-outlined text-purple-400 text-3xl">lock</span>
-          </div>
+          <img
+            src={logoImg}
+            alt="Promo Hub Logo"
+            className="h-14 w-auto object-contain mb-3"
+          />
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
             Admin <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-fuchsia-400">Portal</span>
           </h1>
-          <p className="text-xs text-gray-400 mt-2">
+          <p className="text-xs text-gray-400 mt-1">
             Sign in to manage portfolio video reels
           </p>
         </div>

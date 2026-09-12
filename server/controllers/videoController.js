@@ -19,13 +19,23 @@ const { uploadStreamToCloudinary, deleteFromCloudinary } = require('../utils/clo
  */
 const getVideos = async (req, res) => {
   try {
+    // If database connection is not ready, return empty list gracefully with 200 OK
+    if (Video.db.readyState !== 1) {
+      console.warn('⚠️ Database not ready during getVideos, returning empty list');
+      return res.status(200).json({
+        success: true,
+        count: 0,
+        data: [],
+      });
+    }
+
     // Mongoose READ: Find all videos and sort by `order` ascending, then `createdAt` descending
     const videos = await Video.find({}).sort({ order: 1, createdAt: -1 });
 
     return res.status(200).json({
       success: true,
       count: videos.length,
-      data: videos,
+      data: videos || [],
     });
   } catch (error) {
     console.error('❌ Get Videos Error:', error);
@@ -47,12 +57,19 @@ const createVideo = async (req, res) => {
   let thumbnailResult = null;
 
   try {
+    if (Video.db.readyState !== 1) {
+      return res.status(503).json({
+        success: false,
+        message: 'Database connection unavailable. Please check MongoDB service.',
+      });
+    }
+
     // 1. Enforce 10-Video Limit
     const currentVideoCount = await Video.countDocuments();
     if (currentVideoCount >= 10) {
       return res.status(400).json({
         success: false,
-        message: 'Maximum 10 videos allowed',
+        message: 'Maximum 10 videos allowed. Please delete an existing video first.',
       });
     }
 
@@ -66,41 +83,60 @@ const createVideo = async (req, res) => {
       });
     }
 
-    // 3. Require actual uploaded files (No manual URL creation allowed)
     const videoFile = req.files && req.files.video && req.files.video[0];
     const thumbFile = req.files && req.files.thumbnail && req.files.thumbnail[0];
 
-    if (!videoFile) {
+    let videoUrl = req.body.videoUrl || '';
+    let videoPublicId = '';
+    let thumbnail = req.body.thumbnail || '';
+    let thumbnailPublicId = '';
+
+    // Upload video file to Cloudinary if provided
+    if (videoFile) {
+      try {
+        videoResult = await uploadStreamToCloudinary(videoFile.buffer, 'video', 'stitch_agency/videos');
+        videoUrl = videoResult.secure_url;
+        videoPublicId = videoResult.public_id;
+      } catch (uploadError) {
+        console.error('❌ Cloudinary Video Upload Error:', uploadError);
+        return res.status(500).json({
+          success: false,
+          message: 'Failed to upload video file to Cloudinary.',
+          error: uploadError.message,
+        });
+      }
+    }
+
+    // Upload thumbnail file to Cloudinary if provided
+    if (thumbFile) {
+      try {
+        thumbnailResult = await uploadStreamToCloudinary(thumbFile.buffer, 'image', 'stitch_agency/thumbnails');
+        thumbnail = thumbnailResult.secure_url;
+        thumbnailPublicId = thumbnailResult.public_id;
+      } catch (uploadError) {
+        if (videoResult && videoResult.public_id) {
+          await deleteFromCloudinary(videoResult.public_id, 'video');
+        }
+        console.error('❌ Cloudinary Thumbnail Upload Error:', uploadError);
+        return res.status(500).json({
+          success: false,
+          message: 'Failed to upload thumbnail image to Cloudinary.',
+          error: uploadError.message,
+        });
+      }
+    }
+
+    if (!videoUrl) {
       return res.status(400).json({
         success: false,
-        message: 'Please upload a video file. Video file is required.',
+        message: 'Please select a video file to upload or provide a valid video URL.',
       });
     }
 
-    if (!thumbFile) {
+    if (!thumbnail) {
       return res.status(400).json({
         success: false,
-        message: 'Please upload a thumbnail image. Thumbnail image is required.',
-      });
-    }
-
-    // 4. Upload files to Cloudinary
-    try {
-      videoResult = await uploadStreamToCloudinary(videoFile.buffer, 'video', 'stitch_agency/videos');
-      thumbnailResult = await uploadStreamToCloudinary(thumbFile.buffer, 'image', 'stitch_agency/thumbnails');
-    } catch (uploadError) {
-      // Clean up any successfully uploaded asset before failure
-      if (videoResult && videoResult.public_id) {
-        await deleteFromCloudinary(videoResult.public_id, 'video');
-      }
-      if (thumbnailResult && thumbnailResult.public_id) {
-        await deleteFromCloudinary(thumbnailResult.public_id, 'image');
-      }
-      console.error('❌ Cloudinary Upload Error during video creation:', uploadError);
-      return res.status(500).json({
-        success: false,
-        message: 'Failed to upload media files to Cloudinary.',
-        error: uploadError.message,
+        message: 'Please select a thumbnail image to upload or provide a valid thumbnail URL.',
       });
     }
 
@@ -109,10 +145,10 @@ const createVideo = async (req, res) => {
       const newVideo = await Video.create({
         title: title.trim(),
         description: description ? description.trim() : '',
-        videoUrl: videoResult.secure_url,
-        videoPublicId: videoResult.public_id,
-        thumbnail: thumbnailResult.secure_url,
-        thumbnailPublicId: thumbnailResult.public_id,
+        videoUrl,
+        videoPublicId,
+        thumbnail,
+        thumbnailPublicId,
         order: order !== undefined && order !== '' ? Number(order) : currentVideoCount + 1,
       });
 
@@ -122,7 +158,6 @@ const createVideo = async (req, res) => {
         data: newVideo,
       });
     } catch (dbError) {
-      // If MongoDB save fails, delete the newly uploaded Cloudinary files to avoid orphaned assets
       if (videoResult && videoResult.public_id) {
         await deleteFromCloudinary(videoResult.public_id, 'video');
       }
@@ -156,8 +191,15 @@ const updateVideo = async (req, res) => {
   let newThumbnailResult = null;
 
   try {
+    if (Video.db.readyState !== 1) {
+      return res.status(503).json({
+        success: false,
+        message: 'Database connection unavailable.',
+      });
+    }
+
     const { id } = req.params;
-    const { title, description, order } = req.body;
+    const { title, description, order, videoUrl, thumbnail } = req.body;
 
     // 1. Mongoose READ by ID: Find existing video
     const existingVideo = await Video.findById(id);
@@ -187,6 +229,8 @@ const updateVideo = async (req, res) => {
           error: uploadError.message,
         });
       }
+    } else if (videoUrl && videoUrl.trim()) {
+      existingVideo.videoUrl = videoUrl.trim();
     }
 
     // 3. Upload replacement thumbnail image if provided
@@ -197,7 +241,6 @@ const updateVideo = async (req, res) => {
         existingVideo.thumbnail = newThumbnailResult.secure_url;
         existingVideo.thumbnailPublicId = newThumbnailResult.public_id;
       } catch (uploadError) {
-        // If thumbnail upload fails, clean up new video if it was uploaded
         if (newVideoResult && newVideoResult.public_id) {
           await deleteFromCloudinary(newVideoResult.public_id, 'video');
         }
@@ -208,6 +251,8 @@ const updateVideo = async (req, res) => {
           error: uploadError.message,
         });
       }
+    } else if (thumbnail && thumbnail.trim()) {
+      existingVideo.thumbnail = thumbnail.trim();
     }
 
     // 4. Update text metadata if provided
@@ -226,7 +271,6 @@ const updateVideo = async (req, res) => {
     try {
       updatedVideo = await existingVideo.save();
     } catch (dbError) {
-      // If DB save fails, clean up newly uploaded assets to avoid orphans
       if (newVideoResult && newVideoResult.public_id) {
         await deleteFromCloudinary(newVideoResult.public_id, 'video');
       }
@@ -277,6 +321,13 @@ const updateVideo = async (req, res) => {
  */
 const deleteVideo = async (req, res) => {
   try {
+    if (Video.db.readyState !== 1) {
+      return res.status(503).json({
+        success: false,
+        message: 'Database connection unavailable.',
+      });
+    }
+
     const { id } = req.params;
 
     // 1. Mongoose READ by ID: Find existing video first

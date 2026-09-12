@@ -4,17 +4,33 @@ const mongoose = require('mongoose');
  * ==========================================================
  * DATABASE CONFIGURATION (MongoDB Connection using Mongoose)
  * ==========================================================
- * This function connects our Express server to the MongoDB database.
- * We use mongoose.connect() with the URI stored in our .env file.
+ * Connects to MongoDB Atlas if reachable; otherwise falls back
+ * automatically to the local MongoDB instance.
  */
 const connectDB = async () => {
+  const primaryUri = process.env.MONGODB_URI;
+  const localUri = 'mongodb://127.0.0.1:27017/stitch_agency';
+
+  if (primaryUri) {
+    try {
+      const conn = await mongoose.connect(primaryUri, {
+        serverSelectionTimeoutMS: 3000,
+      });
+      console.log(`✅ MongoDB Connected (Primary): ${conn.connection.host}`);
+      return conn;
+    } catch (error) {
+      console.warn(`⚠️ Primary MongoDB Connection Failed (${error.message}). Switching to local fallback...`);
+    }
+  }
+
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/stitch_agency');
-    console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
+    const conn = await mongoose.connect(localUri, {
+      serverSelectionTimeoutMS: 3000,
+    });
+    console.log(`✅ MongoDB Connected (Local Fallback): ${conn.connection.host}`);
+    return conn;
   } catch (error) {
-    console.error(`❌ MongoDB Connection Error: ${error.message}`);
-    // Do not crash the entire app if database is temporarily unavailable during dev
-    console.log('⚠️ Running in fallback mode or waiting for database reconnection.');
+    console.error(`❌ All MongoDB Connections Failed: ${error.message}`);
   }
 };
 
