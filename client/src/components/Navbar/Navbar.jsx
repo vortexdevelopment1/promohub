@@ -21,7 +21,7 @@ const Navbar = () => {
         <a className="flex items-center group" href="#home">
           <img
             src={logoImg}
-            alt="Promo Hub Logo"
+            alt="QubecloudHub Logo"
             className="h-12 sm:h-14 md:h-14 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
           />
         </a>

@@ -29,7 +29,7 @@ const About = () => {
             {/* Content */}
             <div className="flex flex-col gap-4 text-sm sm:text-base text-gray-300 leading-relaxed font-normal">
               <p>
-                Promo Hub is a creative digital marketing agency based in Indore, helping businesses grow with strategy, creativity, and powerful content. Founded by Varun Soni, Promo Hub combines expertise in video editing, content creation, and digital marketing to help brands stand out and achieve real results in the digital world.
+                QubecloudHub is a creative digital marketing agency based in Indore, helping businesses grow with strategy, creativity, and powerful content. Founded by Varun Soni, QubecloudHub combines expertise in video editing, content creation, and digital marketing to help brands stand out and achieve real results in the digital world.
               </p>
               <p>
                 With over 2 years of hands-on experience, we have worked with clients across multiple industries — delivering result-oriented, creative, and professional solutions that focus on long-term growth.

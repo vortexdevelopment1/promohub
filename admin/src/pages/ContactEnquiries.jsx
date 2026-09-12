@@ -491,7 +491,7 @@ const ContactEnquiries = () => {
               <div className="flex items-center gap-2.5">
                 {/* Email Button */}
                 <a
-                  href={`mailto:${selectedEnquiry.email}?subject=Regarding Your Inquiry — Promo Hub`}
+                  href={`mailto:${selectedEnquiry.email}?subject=Regarding Your Inquiry — QubecloudHub`}
                   className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-xs font-bold shadow-lg hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] hover:scale-105 active:scale-95 transition-all"
                 >
                   <span className="material-symbols-outlined text-[18px]">mail</span>

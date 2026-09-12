@@ -54,7 +54,7 @@ const Login = () => {
         <div className="flex flex-col items-center text-center mb-8">
           <img
             src={logoImg}
-            alt="Promo Hub Logo"
+            alt="QubecloudHub Logo"
             className="h-14 w-auto object-contain mb-3"
           />
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">

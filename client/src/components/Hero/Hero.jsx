@@ -74,7 +74,7 @@ const Hero = () => {
 
             {/* Narrative Subtitle */}
             <p className="animate-hero-paragraph text-sm sm:text-base text-gray-300/90 max-w-xl font-normal leading-relaxed">
-              Promo Hub is a creative digital marketing agency based in Indore, helping businesses grow with strategy, creativity, and powerful content.
+              QubecloudHub is a creative digital marketing agency based in Indore, helping businesses grow with strategy, creativity, and powerful content.
             </p>
 
             {/* Action Buttons with Subtle Hover & Scale */}
@@ -113,7 +113,7 @@ const Hero = () => {
                   <span className="text-xs font-bold text-white">Founded by Varun Soni</span>
                   <span className="material-symbols-outlined text-purple-400 text-[16px] material-symbols-fill">verified</span>
                 </div>
-                <span className="text-[11px] text-gray-400">Founder, Promo Hub | 2+ Years of Experience in Digital Marketing</span>
+                <span className="text-[11px] text-gray-400">Founder, QubecloudHub | 2+ Years of Experience in Digital Marketing</span>
               </div>
             </div>
           </div>
@@ -126,7 +126,7 @@ const Hero = () => {
               {/* 3D Centerpiece Visual */}
               <div className="relative z-10 w-[340px] h-[340px] rounded-full overflow-hidden flex items-center justify-center">
                 <img
-                  alt="Promo Hub 3D Holographic Core"
+                  alt="QubecloudHub 3D Holographic Core"
                   className="w-full h-full object-contain filter drop-shadow-[0_0_35px_rgba(168,85,247,0.7)]"
                   src={heroCore}
                 />

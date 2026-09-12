@@ -1,7 +1,7 @@
 export const testimonials = [
   {
     id: 1,
-    quote: "Promo Hub transformed our social media presence. Highly professional and creative team!",
+    quote: "QubecloudHub transformed our social media presence. Highly professional and creative team!",
     name: "Rohit Sharma",
     role: "CEO, RituFit",
     initials: "RS",
@@ -17,7 +17,7 @@ export const testimonials = [
   },
   {
     id: 3,
-    quote: "Great experience working with Promo Hub. They truly understand our brand.",
+    quote: "Great experience working with QubecloudHub. They truly understand our brand.",
     name: "Karan Mehta",
     role: "Founder, TechVerse",
     initials: "KM",

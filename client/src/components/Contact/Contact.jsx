@@ -70,7 +70,7 @@ const Contact = () => {
   const socialLinks = [
     { label: 'WA', href: 'https://wa.me/919977978575' },
     { label: 'IG', href: 'https://instagram.com/promo.hub' },
-    { label: 'Mail', href: 'mailto:promo.hub9977@gmail.com' },
+    { label: 'Mail', href: 'mailto:QubecloudHub@gmail.com' },
     { label: 'Call', href: 'tel:+919977978575' },
   ];
 
@@ -97,7 +97,7 @@ const Contact = () => {
                 <div className="mt-4">
                   <a
                     className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-xs font-bold shadow-lg hover:shadow-[0_0_25px_rgba(168,85,247,0.6)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300"
-                    href="mailto:promo.hub9977@gmail.com"
+                    href="mailto:QubecloudHub@gmail.com"
                   >
                     <span>Let's Talk Now</span>
                     <span className="material-symbols-outlined text-[15px]">arrow_forward</span>

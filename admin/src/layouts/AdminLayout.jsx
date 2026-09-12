@@ -31,7 +31,7 @@ const AdminLayout = () => {
         <div className="flex items-center">
           <img
             src={logoImg}
-            alt="Promo Hub"
+            alt="QubecloudHub"
             className="h-9 w-auto object-contain"
           />
         </div>
@@ -65,7 +65,7 @@ const AdminLayout = () => {
           <div className="flex items-center justify-center px-2 pt-2">
             <img
               src={logoImg}
-              alt="Promo Hub"
+              alt="QubecloudHub"
               className="h-[78px] w-auto max-w-full object-contain"
             />
           </div>

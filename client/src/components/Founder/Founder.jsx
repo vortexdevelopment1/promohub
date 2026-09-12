@@ -19,7 +19,7 @@ const Founder = () => {
               <div className="absolute w-64 h-64 sm:w-72 sm:h-72 rounded-full border-2 border-purple-500/40 bg-purple-600/10 blur-md pointer-events-none animate-pulse-aura"></div>
               <div className="relative w-64 h-64 sm:w-72 sm:h-72 rounded-2xl overflow-hidden border border-purple-500/30 shadow-2xl transition-transform duration-500 hover:scale-[1.02]">
                 <img
-                  alt="Varun Soni — Founder of Promo Hub"
+                  alt="Varun Soni — Founder of QubecloudHub"
                   className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
                   src={founderImage}
                 />
@@ -55,10 +55,10 @@ const Founder = () => {
                 </a>
                 <a
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#08060c] border border-purple-500/30 text-xs text-gray-300 hover:text-white hover:border-purple-400 hover:scale-[1.02] transition-all duration-300"
-                  href="mailto:promo.hub9977@gmail.com"
+                  href="mailto:QubecloudHub@gmail.com"
                 >
                   <span className="material-symbols-outlined text-[16px] text-purple-400">mail</span>
-                  <span>promo.hub9977@gmail.com</span>
+                  <span>QubecloudHub@gmail.com</span>
                 </a>
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#08060c] border border-purple-500/30 text-xs text-gray-300">
                   <span className="material-symbols-outlined text-[16px] text-purple-400">location_on</span>
