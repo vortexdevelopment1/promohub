@@ -186,6 +186,10 @@
 }
 
 /* Swiper Custom Styling */
+.portfolio-swiper .swiper-slide {
+  cursor: pointer;
+}
+
 .portfolio-swiper .swiper-pagination-bullet {
   background: rgba(168, 85, 247, 0.35);
   opacity: 1;

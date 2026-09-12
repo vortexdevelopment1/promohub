@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { useNavigate, useParams, useLocation, Link } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, EffectCoverflow, Navigation, Pagination } from 'swiper/modules';
 import API from '../../services/api';
+import { projects as fallbackProjects } from '../../data/projects';
 import useScrollReveal from '../../hooks/useScrollReveal';
 
 // Import Swiper styles
@@ -104,7 +105,7 @@ const ReelModal = ({ projectsList, initialIndex, onClose, onNavigate }) => {
             e.stopPropagation();
             toggleMute();
           }}
-          className="w-10 h-10 rounded-full bg-black/60 border border-purple-500/30 text-white hover:border-purple-400 hover:bg-purple-950/60 flex items-center justify-center transition-all backdrop-blur-md"
+          className="w-10 h-10 rounded-full bg-black/60 border border-purple-500/30 text-white hover:border-purple-400 hover:bg-purple-950/60 flex items-center justify-center transition-all backdrop-blur-md cursor-pointer"
           title={isMuted ? 'Unmute (M)' : 'Mute (M)'}
         >
           <span className="material-symbols-outlined text-[20px]">
@@ -115,7 +116,7 @@ const ReelModal = ({ projectsList, initialIndex, onClose, onNavigate }) => {
         <button
           type="button"
           onClick={onClose}
-          className="w-10 h-10 rounded-full bg-black/60 border border-purple-500/30 text-white hover:border-purple-400 hover:bg-purple-950/60 flex items-center justify-center transition-all backdrop-blur-md"
+          className="w-10 h-10 rounded-full bg-black/60 border border-purple-500/30 text-white hover:border-purple-400 hover:bg-purple-950/60 flex items-center justify-center transition-all backdrop-blur-md cursor-pointer"
           title="Close Reel (Esc)"
         >
           <span className="material-symbols-outlined text-[20px]">close</span>
@@ -129,7 +130,7 @@ const ReelModal = ({ projectsList, initialIndex, onClose, onNavigate }) => {
           e.stopPropagation();
           handlePrev();
         }}
-        className="absolute left-3 sm:left-8 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/60 border border-purple-500/30 text-white hover:border-purple-400 hover:bg-purple-950/60 flex items-center justify-center z-30 backdrop-blur-md transition-all active:scale-95 shadow-lg"
+        className="absolute left-3 sm:left-8 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/60 border border-purple-500/30 text-white hover:border-purple-400 hover:bg-purple-950/60 flex items-center justify-center z-30 backdrop-blur-md transition-all active:scale-95 shadow-lg cursor-pointer"
         title="Previous Reel"
       >
         <span className="material-symbols-outlined text-[24px]">chevron_left</span>
@@ -142,7 +143,7 @@ const ReelModal = ({ projectsList, initialIndex, onClose, onNavigate }) => {
           e.stopPropagation();
           handleNext();
         }}
-        className="absolute right-3 sm:right-8 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/60 border border-purple-500/30 text-white hover:border-purple-400 hover:bg-purple-950/60 flex items-center justify-center z-30 backdrop-blur-md transition-all active:scale-95 shadow-lg"
+        className="absolute right-3 sm:right-8 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/60 border border-purple-500/30 text-white hover:border-purple-400 hover:bg-purple-950/60 flex items-center justify-center z-30 backdrop-blur-md transition-all active:scale-95 shadow-lg cursor-pointer"
         title="Next Reel"
       >
         <span className="material-symbols-outlined text-[24px]">chevron_right</span>
@@ -236,7 +237,7 @@ const PortfolioCard = ({ project, onClick }) => {
     >
       {/* Loading State Placeholder */}
       {mediaStatus === 'loading' && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#110e1c] z-10">
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#110e1c] z-10 pointer-events-none">
           <div className="w-8 h-8 rounded-full border-2 border-purple-500/20 border-t-purple-400 animate-spin mb-2" />
           <span className="text-[11px] font-medium text-purple-300/80 tracking-wide animate-pulse">
             Loading...
@@ -246,7 +247,7 @@ const PortfolioCard = ({ project, onClick }) => {
 
       {/* Error / Fallback State */}
       {mediaStatus === 'error' && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#110e1c] p-4 text-center z-10">
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#110e1c] p-4 text-center z-10 pointer-events-none">
           <span className="material-symbols-outlined text-2xl text-purple-400/60 mb-1">
             broken_image
           </span>
@@ -257,7 +258,7 @@ const PortfolioCard = ({ project, onClick }) => {
       {/* Clean Poster Thumbnail Image */}
       <img
         alt={project.alt || project.title}
-        className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-105 ${
+        className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-105 pointer-events-none ${
           mediaStatus === 'loaded' ? 'opacity-100' : 'opacity-0'
         }`}
         src={project.image}
@@ -296,10 +297,11 @@ const Portfolio = () => {
   const { id } = useParams();
   const location = useLocation();
   const swiperRef = useRef(null);
+  const lastClickTimeRef = useRef(0);
 
-  // Projects list state initialized as empty array (no dummy data)
-  const [projectsList, setProjectsList] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // Projects list state initialized with fallback data
+  const [projectsList, setProjectsList] = useState(fallbackProjects || []);
+  const [loading, setLoading] = useState(false);
 
   // Fetch videos dynamically from backend API (MongoDB via GET /api/videos)
   useEffect(() => {
@@ -307,8 +309,6 @@ const Portfolio = () => {
       try {
         setLoading(true);
         const response = await API.get('/videos');
-        console.log("Portfolio API response:", response.data);
-        console.log("Portfolio videos:", response.data?.data);
 
         const videos =
           response.data && Array.isArray(response.data.data)
@@ -317,22 +317,25 @@ const Portfolio = () => {
             ? response.data
             : [];
 
-        const apiProjects = videos.map((video, idx) => ({
-          id: video._id || idx + 1,
-          title: video.title,
-          category: 'Video Reel',
-          deliverables: video.description || 'Deliverables: Short-Form Viral Lab & Motion Content',
-          description: video.description || video.title,
-          image: video.thumbnail,
-          video: video.videoUrl,
-          alt: video.title,
-          order: video.order !== undefined ? video.order : idx + 1,
-        }));
-
-        setProjectsList(apiProjects);
+        if (videos.length > 0) {
+          const apiProjects = videos.map((video, idx) => ({
+            id: video._id || idx + 1,
+            title: video.title,
+            category: 'Video Reel',
+            deliverables: video.description || 'Deliverables: Short-Form Viral Lab & Motion Content',
+            description: video.description || video.title,
+            image: video.thumbnail,
+            video: video.videoUrl,
+            alt: video.title,
+            order: video.order !== undefined ? video.order : idx + 1,
+          }));
+          setProjectsList(apiProjects);
+        } else {
+          setProjectsList(fallbackProjects);
+        }
       } catch (err) {
-        console.error('Portfolio video fetch failed:', err);
-        setProjectsList([]);
+        console.warn('Portfolio video fetch failed, using fallback projects:', err);
+        setProjectsList(fallbackProjects);
       } finally {
         setLoading(false);
       }
@@ -357,26 +360,62 @@ const Portfolio = () => {
         : 0
       : null;
 
-  // Scroll preservation: remember scroll position when clicking video card
-  const handleCardClick = (project) => {
-    sessionStorage.setItem('portfolio_scroll_pos', window.scrollY.toString());
-    navigate(`/portfolio/${project.id}`);
-  };
+  // Pause autoplay when video modal is open, resume when closed
+  useEffect(() => {
+    if (swiperRef.current && swiperRef.current.autoplay) {
+      if (activeModalIndex !== null) {
+        swiperRef.current.autoplay.stop();
+      } else {
+        swiperRef.current.autoplay.start();
+      }
+    }
+  }, [activeModalIndex]);
+
+  // Click handler: centers selected card and immediately plays video in main/modal player
+  const handleCardClick = useCallback(
+    (project, index) => {
+      const now = Date.now();
+      if (now - lastClickTimeRef.current < 250) return;
+      lastClickTimeRef.current = now;
+
+      let projectIndex = index;
+      if (projectIndex === undefined || projectIndex === null || projectIndex < 0) {
+        projectIndex = projectsList.findIndex((p) => String(p.id) === String(project?.id));
+      }
+
+      if (projectIndex !== -1 && swiperRef.current && swiperRef.current.slideToLoop) {
+        swiperRef.current.slideToLoop(projectIndex, 500);
+      }
+
+      if (project) {
+        sessionStorage.setItem('portfolio_scroll_pos', window.scrollY.toString());
+        navigate(`/portfolio/${project.id}`);
+      }
+    },
+    [navigate, projectsList]
+  );
 
   // Close handler: navigate back in history to keep home in history stack
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     if (window.history.state && window.history.state.idx > 0) {
       navigate(-1);
     } else {
       navigate('/', { replace: true });
     }
-  };
+  }, [navigate]);
 
-  // Sync route on next/prev inside modal
-  const handleNavigateProject = (nextId) => {
-    const prefix = location.pathname.startsWith('/reel/') ? '/reel/' : '/portfolio/';
-    navigate(`${prefix}${nextId}`, { replace: true });
-  };
+  // Sync route and background swiper on next/prev inside modal
+  const handleNavigateProject = useCallback(
+    (nextId) => {
+      const prefix = location.pathname.startsWith('/reel/') ? '/reel/' : '/portfolio/';
+      navigate(`${prefix}${nextId}`, { replace: true });
+      const nextIdx = projectsList.findIndex((p) => String(p.id) === String(nextId));
+      if (nextIdx !== -1 && swiperRef.current && swiperRef.current.slideToLoop) {
+        swiperRef.current.slideToLoop(nextIdx, 400);
+      }
+    },
+    [location.pathname, navigate, projectsList]
+  );
 
   // Restore scroll position when returning from video detail page
   useEffect(() => {
@@ -389,6 +428,30 @@ const Portfolio = () => {
       }
     }
   }, [isVideoRoute]);
+
+  // Handle Swiper slide click across all slides (including loop clones and side slides)
+  const handleSwiperClick = useCallback(
+    (swiper) => {
+      const clickedSlide = swiper.clickedSlide;
+      if (!clickedSlide) return;
+
+      let targetIndex = -1;
+      const slideIndexAttr = clickedSlide.getAttribute('data-swiper-slide-index');
+      if (slideIndexAttr !== null && slideIndexAttr !== undefined && slideIndexAttr !== '') {
+        targetIndex = parseInt(slideIndexAttr, 10);
+      } else if (typeof swiper.clickedIndex === 'number') {
+        targetIndex = swiper.clickedIndex % projectsList.length;
+      }
+
+      if (targetIndex >= 0 && targetIndex < projectsList.length) {
+        const selectedProject = projectsList[targetIndex];
+        if (selectedProject) {
+          handleCardClick(selectedProject, targetIndex);
+        }
+      }
+    },
+    [projectsList, handleCardClick]
+  );
 
   return (
     <section
@@ -420,7 +483,7 @@ const Portfolio = () => {
               <button
                 type="button"
                 onClick={() => swiperRef.current?.slidePrev()}
-                className="w-7 h-7 rounded-full flex items-center justify-center text-gray-300 hover:text-white hover:bg-purple-900/40 transition-colors"
+                className="w-7 h-7 rounded-full flex items-center justify-center text-gray-300 hover:text-white hover:bg-purple-900/40 transition-colors cursor-pointer"
                 aria-label="Previous Project"
               >
                 <span className="material-symbols-outlined text-[16px]">chevron_left</span>
@@ -428,7 +491,7 @@ const Portfolio = () => {
               <button
                 type="button"
                 onClick={() => swiperRef.current?.slideNext()}
-                className="w-7 h-7 rounded-full flex items-center justify-center text-gray-300 hover:text-white hover:bg-purple-900/40 transition-colors"
+                className="w-7 h-7 rounded-full flex items-center justify-center text-gray-300 hover:text-white hover:bg-purple-900/40 transition-colors cursor-pointer"
                 aria-label="Next Project"
               >
                 <span className="material-symbols-outlined text-[16px]">chevron_right</span>
@@ -457,23 +520,26 @@ const Portfolio = () => {
               effect={'coverflow'}
               grabCursor={true}
               centeredSlides={true}
+              slideToClickedSlide={true}
+              onClick={handleSwiperClick}
               loop={projectsList.length > 2}
-              speed={800}
+              loopAdditionalSlides={2}
+              speed={600}
               autoplay={{
-                delay: 2500,
+                delay: 1800,
                 disableOnInteraction: false,
                 pauseOnMouseEnter: true,
               }}
               coverflowEffect={{
                 rotate: 0,
                 stretch: 0,
-                depth: 90,
-                modifier: 2,
+                depth: 85,
+                modifier: 1.8,
                 slideShadows: false,
               }}
               breakpoints={{
                 320: {
-                  slidesPerView: 1.15,
+                  slidesPerView: 1.2,
                   spaceBetween: 16,
                 },
                 640: {
@@ -491,11 +557,11 @@ const Portfolio = () => {
               }}
               className="portfolio-swiper !pb-12"
             >
-              {projectsList.map((project) => (
-                <SwiperSlide key={project.id} className="!h-auto flex items-center justify-center">
+              {projectsList.map((project, idx) => (
+                <SwiperSlide key={project.id} className="!h-auto flex items-center justify-center cursor-pointer">
                   <PortfolioCard
                     project={project}
-                    onClick={() => handleCardClick(project)}
+                    onClick={() => handleCardClick(project, idx)}
                   />
                 </SwiperSlide>
               ))}
